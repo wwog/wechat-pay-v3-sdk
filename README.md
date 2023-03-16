@@ -48,7 +48,7 @@ wechatpayV3({/* config */},{
 
 ### 调用方式 1 (推荐)容器调用
 
-通过容器函数获取 sdk 内置的所有方法.容器默认单例模式,同个商户号只会返回一个实例。如果不想使用单例模式,请在配置中关闭或者采用类调用形式。
+容器默认单例模式,同个商户号只会返回一个实例。如果不想使用单例模式,请在配置中关闭或者采用类调用形式。
 
 ```typescript
 import wechatpayV3, { ContainerOptions, Applyment } from 'wechat-pay-v3'
@@ -64,7 +64,7 @@ const businessOne: ContainerOptions = {
   //默认单例模式,开启后同个商户号只会返回一个实例。
   singleton: true,
   //可选:默认系统的tmp目录
-  downloadDir: '',
+  downloadDir: './tmpDownlond',
   //可选: 默认ture。开启后会缓存证书12小时,12小时后惰性更新证书
   autoUpdateCertificates: true,
   //可选，默认'wechatpay-sdk'
