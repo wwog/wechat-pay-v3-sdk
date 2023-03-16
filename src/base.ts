@@ -1,6 +1,6 @@
 import crypto from 'crypto'
-import axios from 'axios'
 import FormData from 'form-data'
+import { create } from 'axios'
 import { join } from 'path'
 import { createWriteStream, existsSync, mkdirSync, readFileSync, statSync } from 'fs'
 import {
@@ -20,7 +20,7 @@ import {
   urlExclueOrigin,
 } from './utils'
 
-import type { InternalAxiosRequestConfig } from 'axios'
+import type { InternalAxiosRequestConfig, AxiosInstance } from 'axios'
 import type { GetCertificatesResult, DecryptCertificates, UploadImageResult } from './types'
 
 export interface WechatBaseOptions {
@@ -86,7 +86,7 @@ export class WechatPayV3Base {
   /** 加密算法,固定值'WECHATPAY2-SHA256-RSA2048'.国密暂不支持 */
   readonly schema = 'WECHATPAY2-SHA256-RSA2048'
   /** axios请求示例 */
-  readonly request: axios.AxiosInstance
+  readonly request: AxiosInstance
   /** 商户号 */
   readonly mchid: string
   /** header -> userAgent (微信可能会拒绝不带userAgent的请求) */
@@ -121,7 +121,7 @@ export class WechatPayV3Base {
     }
     //给axios添加自定义配置项
 
-    this.request = axios.create({
+    this.request = create({
       timeout: 1000 * 60 * 5,
       timeoutErrorMessage: '请求超时',
       headers: {

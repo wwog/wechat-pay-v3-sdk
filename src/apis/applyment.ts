@@ -25,7 +25,6 @@ export class Applyment {
     const apiUrl = 'https://api.mch.weixin.qq.com/v3/applyment4sub/applyment/'
     const res = await this.base.request.post<SubmitApplicationsResult>(apiUrl, body, {
       headers: {
-        'Content-Type': 'application/json',
         'Wechatpay-Serial': this.base.certificates[0].serial_no,
       },
     })
