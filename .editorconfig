@@ -1,0 +1,11 @@
+root = true
+
+[*]
+charset = utf-8
+trim_trailing_whitespace = true
+
+# prettier completed the following work
+# end_of_line = lf
+# indent_size = 2
+# indent_style = space
+# max_line_length = 120
