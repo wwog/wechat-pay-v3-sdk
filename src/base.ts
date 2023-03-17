@@ -481,7 +481,7 @@ export class WechatPayV3Base {
 const baseInstanceMap = new Map<string, WechatPayV3Base>()
 const useInstanceMap = new Map<string, any>()
 
-export interface ControllerOptions extends WechatBaseOptions {
+export interface ContainerOptions extends WechatBaseOptions {
   /**
    * 是否使用单例模式
    * @default true
@@ -495,7 +495,7 @@ export interface ControllerOptions extends WechatBaseOptions {
  * @param events Base的事件
  * @returns
  */
-export function apiController(options: ControllerOptions, events?: WechatBaseEventOPtions) {
+export function apiContainer(options: ContainerOptions, events?: WechatBaseEventOPtions) {
   const { singleton = true, ...wechatPayOptions } = options
 
   let base: WechatPayV3Base

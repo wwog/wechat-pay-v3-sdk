@@ -124,7 +124,141 @@ export interface BaseQueryOrderWithTid {
   /** 微信支付订单号 */
   transaction_id: string
 }
-export interface JSAPI_QueryOrder_tid extends BaseQueryOrderWithTid {
+
+export interface JSAPI_QueryOrder_tid_Business extends BaseQueryOrderWithTid {
+  mchid: string
+}
+
+export interface JSAPI_QueryOrder_tid_Provider extends BaseQueryOrderWithTid {
   sp_mchid: string
   sub_mchid: string
 }
+
+export interface BaseQueryOrderWithOutTradeNo {
+  /** 商户订单号 */
+  out_trade_no: string
+}
+
+export interface JSAPI_QueryOrder_outTradeNo_Business extends BaseQueryOrderWithOutTradeNo {
+  mchid: string
+}
+
+export interface JSAPI_QueryOrder_outTradeNo_Provider extends BaseQueryOrderWithOutTradeNo {
+  sp_mchid: string
+  sub_mchid: string
+}
+
+export interface BaseQueryOrderResult {
+  /** 商户订单号 */
+  out_trade_no: string
+  /** 微信支付订单号 */
+  transaction_id: string
+  /** 交易类型 */
+  trade_type: TradeTypeEnum
+  /** 交易状态 */
+  trade_state: TradeStateEnum
+  /** 交易状态描述 */
+  trade_state_desc: string
+  /** 付款银行 */
+  bank_type: string
+  /** 附加数据 */
+  attach: string
+  /** 支付完成时间 */
+  success_time: string
+  /** 支付者信息 */
+  payer?: any
+  /** 订单金额信息 */
+  amount?: QueryOrderAmount
+  /** 支付场景描述 */
+  scene_info?: {
+    /** 商户端设备号 */
+    device_id: string
+  }
+  /** 优惠功能 */
+  promotion_detail?: QueryOrderPromotionDetail[]
+}
+
+export enum TradeTypeEnum {
+  /** 公众号支付 */
+  JSAPI = 'JSAPI',
+  /** 扫码支付 */
+  NATIVE = 'NATIVE',
+  /** APP支付 */
+  APP = 'APP',
+  /** 付款码支付 */
+  MICROPAY = 'MICROPAY',
+  /** H5支付 */
+  MWEB = 'MWEB',
+  /** 刷脸支付 */
+  FACEPAY = 'FACEPAY',
+}
+
+export enum TradeStateEnum {
+  /** 支付成功 */
+  SUCCESS = 'SUCCESS',
+  /** 转入退款 */
+  REFUND = 'REFUND',
+  /** 未支付 */
+  NOTPAY = 'NOTPAY',
+  /** 已关闭 */
+  CLOSED = 'CLOSED',
+  /** 已撤销（仅付款码支付会返回） */
+  REVOKED = 'REVOKED',
+  /** 用户支付中（仅付款码支付会返回） */
+  USERPAYING = 'USERPAYING',
+  /** 支付失败（仅付款码支付会返回） */
+  PAYERROR = 'PAYERROR',
+}
+
+export interface QueryOrderAmount {
+  /** 订单金额 */
+  total: number
+  /** 用户支付金额 */
+  payer_total: number
+  /** 用户支付币种 */
+  payer_currency: string
+  /** 货币类型 */
+  currency: string
+}
+
+export interface QueryOrderPromotionDetail {
+  /** 券ID */
+  coupon_id: string
+  /** 优惠名称 */
+  name?: string
+  /** 优惠范围 */
+  scope?: 'GLOBAL' | 'SINGLE'
+  /** 优惠类型 */
+  type?: 'CASH' | 'NOCASH'
+  /** 优惠券面额 */
+  amount: number
+  /** 活动id */
+  stock_id?: string
+  /** 微信出资 */
+  wechatpay_contribute?: number
+  /** 商户出资 */
+  merchant_contribute?: number
+  /** 其他出资 */
+  other_contribute?: number
+  /** 优惠币种 */
+  currency?: string
+  /** 单品列表 */
+  goods_detail?: QueryOrderGoodsDetail[]
+}
+
+export interface QueryOrderGoodsDetail {
+  /** 商品编码 */
+  goods_id: string
+  /** 商品数量 */
+  quantity: number
+  /** 商品单价 */
+  unit_price: number
+  /** 商品优惠金额 */
+  discount_amount: number
+  /** 商品备注 */
+  goods_remark?: string
+}
+
+export interface QueryOrderResult_Business extends BaseQueryOrderResult, BusinessToken {}
+
+export interface QueryOrderResult_Provider extends BaseQueryOrderResult, ProviderToken, SubToken {}

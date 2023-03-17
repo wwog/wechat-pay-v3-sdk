@@ -1,9 +1,8 @@
-export * from './base'
-export * from './apis/applyment/applyment'
-export * from './apis/applyment/applyment.types'
-export * from './apis/basePay/JSAPI'
-export * from './apis/basePay/basePay.types'
+export type { ContainerOptions, WechatBaseEventOPtions, WechatBaseOptions } from './base'
+export { getInstances, WechatPayV3Base } from './base'
+export { Applyment } from './apis/applyment/applyment'
+export { JSAPI } from './apis/basePay/JSAPI'
 
 export * as utils from './utils'
-import { apiController } from './base'
-export default apiController
+import { apiContainer } from './base'
+export default apiContainer
