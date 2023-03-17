@@ -1,6 +1,7 @@
 export * from './base'
-export * from './apis/applyment'
-export * from './apis/applyment.types'
+export * from './apis/applyment/applyment'
+export * from './apis/applyment/applyment.types'
+export * from './apis/basePay/JSAPI'
+export * from './apis/basePay/basePay.types'
 
-import * as utils from './utils'
-export { utils }
+export * as utils from './utils'

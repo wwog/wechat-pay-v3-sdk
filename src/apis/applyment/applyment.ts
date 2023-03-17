@@ -1,11 +1,11 @@
-import type { WechatPayV3Base } from '../base'
+import type { WechatPayV3Base } from '../../base'
 import type {
   SubmitApplicationBody,
   SubmitApplicationsResult,
   QueryApplymentStateResult,
   ModifySettlementAccountBody,
   QuerySettlementAccountResult,
-} from './applyment.types'
+} from '../applyment/applyment.types'
 
 /**
  * 子商户 (特约商户)
