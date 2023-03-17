@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import FormData from 'form-data'
 import { create } from 'axios'
 import { join } from 'path'
-import { createWriteStream, existsSync, mkdirSync, readFileSync, statSync } from 'fs'
+import { createWriteStream, existsSync, mkdirSync, readFileSync, statSync, unlink } from 'fs'
 import {
   decryptToString_AES,
   encrypt,
@@ -55,7 +55,7 @@ export interface WechatBaseOptions {
    * 下载文件文件夹
    * @default [systemTempDir]/wxpay-v3-downloads
    * @description 让部分接口更加方便,例如上传文件给微信接口只能从本地上传
-   * @description 需要注意的是,sdk并不会保存此文件,于对应功能完毕后,会自动删除此文件
+   * @description 需要注意的是,sdk并不会保存此文件,于对应功能完毕后
    */
   downloadDir?: string
 }
@@ -430,7 +430,7 @@ export class WechatPayV3Base {
         'Content-Type': 'multipart/form-data;boundary=' + formData.getBoundary(),
       },
     })
-    return res.data.media_id
+    return res.data
   }
 
   /**
@@ -444,7 +444,12 @@ export class WechatPayV3Base {
   async uploadImage(pathOrUrl: string, fileName?: string) {
     if (isUrl(pathOrUrl)) {
       const { filePath } = await this.downloadFile(pathOrUrl)
-      return this._upload(filePath, { fileName, type: 'image' })
+      const result = await this._upload(filePath, { fileName, type: 'image' })
+      //删除临时文件
+      unlink(filePath, e => {
+        if (e) console.error('本地文件删除失败', e)
+      })
+      return result
     } else {
       return this._upload(pathOrUrl, { fileName, type: 'image' })
     }
@@ -461,7 +466,12 @@ export class WechatPayV3Base {
   async uploadVideo(pathOrUrl: string, fileName?: string) {
     if (isUrl(pathOrUrl)) {
       const { filePath } = await this.downloadFile(pathOrUrl)
-      return this._upload(filePath, { fileName, type: 'video' })
+      const result = this._upload(filePath, { fileName, type: 'video' })
+      //删除临时文件
+      unlink(filePath, e => {
+        if (e) console.error('本地文件删除失败', e)
+      })
+      return result
     } else {
       return this._upload(pathOrUrl, { fileName, type: 'video' })
     }
@@ -471,7 +481,7 @@ export class WechatPayV3Base {
 const baseInstanceMap = new Map<string, WechatPayV3Base>()
 const useInstanceMap = new Map<string, any>()
 
-export interface ContainerOptions extends WechatBaseOptions {
+export interface ControllerOptions extends WechatBaseOptions {
   /**
    * 是否使用单例模式
    * @default true
@@ -485,7 +495,7 @@ export interface ContainerOptions extends WechatBaseOptions {
  * @param events Base的事件
  * @returns
  */
-export function wechatpayV3(options: ContainerOptions, events?: WechatBaseEventOPtions) {
+export function apiController(options: ControllerOptions, events?: WechatBaseEventOPtions) {
   const { singleton = true, ...wechatPayOptions } = options
 
   let base: WechatPayV3Base

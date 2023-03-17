@@ -56,7 +56,7 @@ wechatpayV3(
 容器默认单例模式,同个商户号只会返回一个实例。如果不想使用单例模式,请在配置中关闭或者采用类调用形式。
 
 ```typescript
-import wechatpayV3, { ContainerOptions, Applyment } from 'wechat-pay-v3'
+import { apiController, ContainerOptions, Applyment } from 'wechat-pay-v3'
 const businessOne: ContainerOptions = {
   //证书
   apiclient_cret: readFileSync('/xx/apiclient_cret.pem'),
@@ -76,7 +76,7 @@ const businessOne: ContainerOptions = {
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
 }
 
-const b1 = wechatpayV3(businessOne)
+const b1 = apiController(businessOne)
 //happy coding....
 b1.use(Applyment).submitApplications()
 ```
@@ -107,7 +107,7 @@ class Others {
     //如果签名串并非data对象的内容,请自行计算
     //可以参照源码中_upload的实现
     return this.base.request({
-      url: '/v3/certificates',
+      url: 'https://xxx.xxx.xxx/xxx', //需要为完整的url而非接口路径
       method: 'GET',
     })
   }
@@ -118,7 +118,7 @@ const others = new Others(baseIns)
 //直接调用
 others.test()
 //或者通过容器调用
-wechatpayV3(businessOne).use(Others).test()
+apiController(businessOne).use(Others).test()
 ```
 
 ## 支持功能列表
@@ -135,13 +135,12 @@ wechatpayV3(businessOne).use(Others).test()
   - 修改结算账户 modifySettlement
   - 查询结算账户 querySettlement
 - 基础支付 BasePay
-  - JSAPI支付 JSAPI
+  - JSAPI 支付 JSAPI
     - 下单 order | orderOnProvider
 
 ## todo
 
 - [ ] 支付相关接口
-
 
 ## 贡献须知
 
@@ -152,12 +151,12 @@ wechatpayV3(businessOne).use(Others).test()
   - 直连商户命名直接使用具体方法做名称,例如:order
   - 服务商命名使用 [方法名]OnProvider,例如:orderOnProvider
 - 直连和服务商的方法分开,不要 类型或来书写,因为 typescript 提示不会缩减范围导致类型提示错误(函数重载也可以实现功能,不过我选择了分开,这样更加清晰)
-
+- 由于直连商户和服务商的调用参数往往不一样,所以不做接口调用参数是全量填写，而非引用配置的方式。这样可以保证参数的正确性。
 
 ## 关于发布及测试
 
 因为哪怕是沙盒环境也需要真实的敏感信息作为提交数据,这些东西并不能放出来,如果有人愿意贡献一个可公开不用的商户请联系我,这并不会明文保存项目里。
 
-提交发布仅为我项目实际用到了或者测试着写过确认了无误才会发布,所以源码里有的功能不一定会发布到npm。
+提交发布仅为我项目实际用到了或者测试着写过确认了无误才会发布,所以源码里有的功能不一定会发布到 npm。
 
 其余的工具方法没有写单元测试，都很简单且具体。

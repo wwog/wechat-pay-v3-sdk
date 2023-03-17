@@ -10,8 +10,13 @@ export class JSAPI {
       provider: `https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi`,
       business: `https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi`,
     },
+    transactionIdQueryOrder: {
+      provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/',
+      business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/id/', //后面加上订单号
+    },
   }
   constructor(private base: WechatPayV3Base) {}
+  //=========================================下单
   private async _order(data: any) {
     //这里不用类型标注,因为typescript当前版本不会缩减范围
     const isBusiness = data.appid !== undefined
@@ -27,4 +32,8 @@ export class JSAPI {
   async orderOnProvider(data: JSAPI_Oder_Provider) {
     return this._order(data)
   }
+  //=========================================查询订单
+  // private async _transactionIdQueryOrder() {}
+  // async transactionIdQueryOrder() {}
+  // async transactionIdQueryOrderOnProvider() {}
 }

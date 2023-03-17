@@ -120,3 +120,11 @@ export interface JSAPI_Oder_Business extends BaseOrderParams, BusinessToken {
 export interface JSAPI_Oder_Provider extends BaseOrderParams, ProviderToken, SubToken {
   payer: ProviderPayerToken
 }
+export interface BaseQueryOrderWithTid {
+  /** 微信支付订单号 */
+  transaction_id: string
+}
+export interface JSAPI_QueryOrder_tid extends BaseQueryOrderWithTid {
+  sp_mchid: string
+  sub_mchid: string
+}
