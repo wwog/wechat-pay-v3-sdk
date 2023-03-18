@@ -65,18 +65,20 @@ export interface WechatBaseEventOPtions {
    * 在请求前触发,可以在此处修改请求配置.
    * @description 签名生成在onRequsetBefore之后,此处无法获取到签名
    * @param config 请求的配置
+   * @param instance 当前实例
    */
-  onRequsetBefore?: (config: InternalAxiosRequestConfig<any>) => void
+  onRequsetBefore?: (config: InternalAxiosRequestConfig<any>, instance: WechatPayV3Base) => void
   /**
    * 在请求后触发
    * @description 签名生成在onRequsetAfter之前,此处可以获取到签名并修改
    * @param config 请求的配置
+   * @param instance 当前实例
    */
-  onRequsetAfter?: (config: InternalAxiosRequestConfig<any>) => void
+  onRequsetAfter?: (config: InternalAxiosRequestConfig<any>, instance: WechatPayV3Base) => void
   /**
    * 在请求成功后触发
    */
-  onResponse?: (result: any) => void
+  onResponse?: (result: any, instance: WechatPayV3Base) => void
 }
 
 /** 微信支付v3 */
@@ -140,7 +142,7 @@ export class WechatPayV3Base {
     this.request.interceptors.response.use(
       response => {
         if (this.events.onResponse) {
-          this.events.onResponse(response)
+          this.events.onResponse(response, this)
         }
         return response
       },
@@ -154,7 +156,7 @@ export class WechatPayV3Base {
     //axios请求拦截
     this.request.interceptors.request.use(async config => {
       if (this.events.onRequsetBefore) {
-        this.events.onRequsetBefore(config)
+        this.events.onRequsetBefore(config, this)
       }
       //如果没有添加auth，则在中间路由添加。因为某些接口需要单独处理签名生成
       if (config.headers?.Authorization === undefined) {
@@ -179,7 +181,7 @@ export class WechatPayV3Base {
       }
       await this.updateCertificates()
       if (this.events.onRequsetAfter) {
-        this.events.onRequsetAfter(config)
+        this.events.onRequsetAfter(config, this)
       }
       return config
     })
@@ -221,6 +223,17 @@ export class WechatPayV3Base {
   }
 
   /**
+   * 构造验签名串
+   * @param timestamp 参数在响应头中对应
+   * @param nonce 参数在响应头中对应
+   * @param body 参数在响应头中对应
+   * @returns
+   */
+  protected buildMessageVerify(timestamp: string, nonce: string, body: string) {
+    return [timestamp, nonce, body].join('\n') + '\n'
+  }
+
+  /**
    * 构造Authorization
    * @param nonce_str 随机字符串
    * @param timestamp 时间戳
@@ -236,6 +249,24 @@ export class WechatPayV3Base {
    */
   protected sha256WithRSA(data: string) {
     return crypto.createSign('RSA-SHA256').update(data).sign(this.privateKey, 'base64')
+  }
+  /**
+   * 平台证书公钥验签
+   * @param serial 证书序列号
+   * @param signature 签名
+   * @param data 待验签数据
+   */
+  protected sha256WithRsaVerify(serial: string, signature: string, data: string) {
+    const cert = this.certificates.find(item => item.serial_no === serial)
+    if (!cert) {
+      //这里直接抛错,因为证书并非api下载使用,过期或不存在逻辑上不会出现。如果出现打印当前证书列表,方便调试
+      console.error({
+        cerificates: this.certificates,
+        certExpiresTime: this.certExpiresTime,
+      })
+      throw new Error('证书序列号错误')
+    }
+    return crypto.createVerify('RSA-SHA256').update(data).verify(cert.serial_no, signature, 'base64')
   }
   /**
    * 解密平台响应

@@ -184,3 +184,32 @@ export function setPathValue(
     return prev[curr]
   }, obj)
 }
+/**
+ * 通过标志位和对象替换字符串
+ * @description 例如: ('http://www.baidu.com/{name}/{age}', {name: '张三', age: 18}) => http://www.baidu.com/张三/18
+ * @param str
+ * @param params 参数对象
+ * @param beforeToken 默认为 {
+ * @param afterToken 默认为 }
+ * @returns
+ */
+export function replaceStrWithTokenObject<T extends string>(
+  str: T,
+  params: Record<GetUrlParams<T>, string>,
+  beforeToken = '{',
+  afterToken = '}',
+) {
+  const arr = Object.entries(params) as [GetUrlParams<T, typeof beforeToken, typeof afterToken>, string][]
+  let result: string = str
+  arr.forEach(([key, value]) => {
+    result = result.replace(`${beforeToken}${key}${afterToken}`, value)
+  })
+  return result
+}
+
+export type GetUrlParams<
+  T extends string,
+  L extends string = '{',
+  R extends string = '}',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+> = T extends `${infer _}${L}${infer P}${R}${infer R1}` ? P | GetUrlParams<R1, L, R> : never
