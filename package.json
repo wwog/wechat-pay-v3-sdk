@@ -1,6 +1,6 @@
 {
   "name": "wechat-pay-v3",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "wechat-pay-v3",
   "files": [
     "dist"
@@ -13,7 +13,8 @@
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "packageManager": "pnpm@7.29.3",
@@ -25,7 +26,8 @@
     "lint:fix": "eslint --cache --ext .tsx,.ts,.js,.jsx . --fix",
     "format": "prettier --ignore-path .eslintignore --write ./src/**/*.ts",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "publish": "pnpm run build && pnpm run lint && pnpm run format && pnpm publish"
   },
   "keywords": [
     "wechatpay",

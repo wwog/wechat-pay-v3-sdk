@@ -5,4 +5,5 @@ export { JSAPI } from './apis/basePay/JSAPI'
 
 export * as utils from './utils'
 import { apiContainer } from './base'
+export { apiContainer }
 export default apiContainer
