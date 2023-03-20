@@ -538,6 +538,8 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
       base = new WechatPayV3Base(wechatPayOptions, events)
       baseInstanceMap.set(key, base)
     }
+  } else {
+    base = new WechatPayV3Base(wechatPayOptions, events)
   }
 
   function use<T extends { new (base: WechatPayV3Base): any }>(ApiClass: T) {
