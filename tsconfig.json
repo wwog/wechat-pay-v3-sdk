@@ -7,18 +7,18 @@
     "strict": true,
     "jsx": "preserve",
     "allowJs": true,
-    "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "baseUrl": ".",
     "lib": [
       "esnext",
       "dom"
-    ]
+    ],
+    "outDir": "dist",
+    "declaration": true
   },
   "include": [
     "src/**/*",
-    "test/**/*",
-    "tsup.config.ts",
+    "test/**/*"
   ],
 }
