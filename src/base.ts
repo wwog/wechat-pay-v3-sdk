@@ -561,7 +561,7 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
 
   return {
     use,
-    base: base!,
+    ...base,
   }
 }
 
