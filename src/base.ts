@@ -541,12 +541,15 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
   } else {
     base = new WechatPayV3Base(wechatPayOptions, events)
   }
-
-  function use<T extends { new (base: WechatPayV3Base): T }>(ApiClass: T) {
+  function use<
+    T extends {
+      new (wechatpay: WechatPayV3Base): any
+    },
+  >(ApiClass: T): InstanceType<T> {
     if (singleton) {
       const key = ApiClass.name + wechatPayOptions.mchid
       if (useInstanceMap.has(key)) {
-        return useInstanceMap.get(key)! as T
+        return useInstanceMap.get(key)!
       } else {
         const instance = new ApiClass(base)
         useInstanceMap.set(key, instance)
