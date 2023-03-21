@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import FormData from 'form-data'
-import { create } from 'axios'
+import axios from 'axios'
 import { join } from 'path'
 import { createWriteStream, existsSync, mkdirSync, readFileSync, statSync, unlink } from 'fs'
 import {
@@ -123,7 +123,7 @@ export class WechatPayV3Base {
     }
     //给axios添加自定义配置项
 
-    this.request = create({
+    this.request = axios.create({
       timeout: 1000 * 60 * 5,
       timeoutErrorMessage: '请求超时',
       headers: {

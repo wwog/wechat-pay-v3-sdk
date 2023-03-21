@@ -17,10 +17,8 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "packageManager": "pnpm@7.29.3",
   "funding": "https://github.com/wwog",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "build": "tsup",
     "lint": "eslint --cache --ext .tsx,.ts,.js,.jsx .",
     "lint:fix": "eslint --cache --ext .tsx,.ts,.js,.jsx . --fix",
