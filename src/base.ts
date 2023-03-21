@@ -542,7 +542,7 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     base = new WechatPayV3Base(wechatPayOptions, events)
   }
 
-  function use<T extends { new (base: WechatPayV3Base): any }>(ApiClass: T) {
+  function use<T extends { new (base: WechatPayV3Base): T }>(ApiClass: T) {
     if (singleton) {
       const key = ApiClass.name + wechatPayOptions.mchid
       if (useInstanceMap.has(key)) {
