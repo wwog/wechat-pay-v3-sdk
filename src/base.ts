@@ -558,10 +558,14 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     }
     return new ApiClass(base)
   }
-
+  const { downloadFile, publicEncrypt, publicEncryptObjectPaths, uploadImage, uploadVideo } = base
   return {
     use,
-    ...base,
+    downloadFile,
+    publicEncrypt,
+    publicEncryptObjectPaths,
+    uploadImage,
+    uploadVideo,
   }
 }
 
