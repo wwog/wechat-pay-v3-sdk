@@ -364,6 +364,54 @@ export class WechatPayV3Base {
     })
   }
 
+  /**
+   * 响应验签
+   * @description 该函数会验证签名,返回true表示验签成功,返回false表示验签失败
+   * @param headers 请求头
+   * @param body  请求体
+   */
+  resVerify<H extends Record<string, any>, B extends Record<string, any>>(headers: H, body?: B) {
+    const {
+      'Wechatpay-Timestamp': timestamp,
+      'Wechatpay-Nonce': nonce,
+      'Wechatpay-Signature': signature,
+      'Wechatpay-Serial': serial,
+    } = headers
+    let bodyStr = ''
+    if (body) {
+      bodyStr = Object.keys(body).length !== 0 ? JSON.stringify(body) : ''
+    }
+
+    //构建验签名串
+    const signStr = this.buildMessageVerify(timestamp, nonce, bodyStr)
+    //验证签名
+    return this.sha256WithRsaVerify(serial, signature, signStr)
+  }
+
+  /**
+   * 处理回调 -验证签名,并使用AEAD_AES_256_GCM解密
+   * @param headers
+   * @param body
+   */
+  async handleCallback<H extends Record<string, any>, B extends Record<string, any>>(headers: H, body: B) {
+    if (!body.resource) {
+      throw new Error('回调数据格式错误')
+    }
+    const isOk = this.resVerify(headers, body)
+    if (!isOk) {
+      throw new Error('回调验签失败')
+    }
+    //解密
+    const resource = this.aesGcmDecrypt(body.resource)
+    try {
+      return {
+        ...body,
+        resource: JSON.parse(resource),
+      }
+    } catch (error) {
+      throw new Error('回调数据JSON解析失败')
+    }
+  }
   //================ Base Api
 
   /**
@@ -567,6 +615,8 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     aesGcmDecrypt,
     sha256WithRSA,
     sha256WithRsaVerify,
+    handleCallback,
+    resVerify,
   } = base
   return {
     use,
@@ -578,6 +628,8 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     sha256WithRSA,
     aesGcmDecrypt,
     sha256WithRsaVerify,
+    handleCallback,
+    resVerify,
     base: base!,
   }
 }
