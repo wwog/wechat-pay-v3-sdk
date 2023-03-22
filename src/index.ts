@@ -1,6 +1,6 @@
 export * from './base'
-export { Applyment } from './apis/applyment/applyment'
-export { JSAPI } from './apis/basePay/JSAPI'
+export * from './apis/applyment'
+export * from './apis/basePay'
 
 export * from './utils'
 export * from './types'

@@ -58,6 +58,3 @@ export type Certificates = Certificate[]
 export type GetCertificatesResult = {
   data: Certificates
 }
-
-export * from './apis/basePay/basePay.types'
-export * from './apis/applyment/applyment.types'

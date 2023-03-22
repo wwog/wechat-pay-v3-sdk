@@ -66,7 +66,7 @@ const base = new WechatPayV3Base(
 
 ### 调用方式 1 (推荐)容器调用
 
-容器默认单例模式,同个商户号只会返回一个实例。如果不想使用单例模式,请在配置中关闭或者采用类调用形式。
+容器默认单例模式,同个商户号只会返回一个实例。容器返回除了use方法外,基于base实例的部分方法和实例本身也会暴露出来。
 
 ```typescript
 import { apiController, ContainerOptions, Applyment } from 'wechat-pay-v3'

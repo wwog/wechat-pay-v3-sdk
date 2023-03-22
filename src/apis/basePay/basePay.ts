@@ -12,9 +12,11 @@ import type {
 } from './basePay.types'
 
 /**
- * 基础支付-JSAPI
+ * 基础支付
+ * 默认以JSAPI接口构成,其他接口可继承此类进行扩展。
+ * 除开下单接口,其余接口基本一致
  */
-export class JSAPI {
+export class BasePay {
   static UrlMap = {
     order: {
       provider: `https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi`,
@@ -39,7 +41,7 @@ export class JSAPI {
   private async _order(data: any) {
     //这里不用类型标注,因为typescript当前版本不会缩减范围
     const isBusiness = data.appid !== undefined
-    const apiUrl = isBusiness ? JSAPI.UrlMap.order.business : JSAPI.UrlMap.order.provider
+    const apiUrl = isBusiness ? BasePay.UrlMap.order.business : BasePay.UrlMap.order.provider
     const result = await this.base.request.post<{ prepay_id: string }>(apiUrl, data)
     return result.data
   }
@@ -55,7 +57,9 @@ export class JSAPI {
   //=========================================查询订单_通过微信订单号
   private async _transactionIdQueryOrder<T = any>(data: any) {
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness ? JSAPI.UrlMap.transactionIdQueryOrder.business : JSAPI.UrlMap.transactionIdQueryOrder.provider
+    const _ = isBusiness
+      ? BasePay.UrlMap.transactionIdQueryOrder.business
+      : BasePay.UrlMap.transactionIdQueryOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
       id: data.transaction_id,
     })
@@ -78,7 +82,7 @@ export class JSAPI {
   //=========================================查询订单_通过商户订单号
   async _outTradeNoQueryOrder<T = any>(data: any) {
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness ? JSAPI.UrlMap.outTradeNoQueryOrder.business : JSAPI.UrlMap.outTradeNoQueryOrder.provider
+    const _ = isBusiness ? BasePay.UrlMap.outTradeNoQueryOrder.business : BasePay.UrlMap.outTradeNoQueryOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
       out_trade_no: data.out_trade_no,
     })
@@ -101,7 +105,7 @@ export class JSAPI {
   //=========================================关闭订单
   private async _closeOrder(data: any) {
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness ? JSAPI.UrlMap.closeOrder.business : JSAPI.UrlMap.closeOrder.provider
+    const _ = isBusiness ? BasePay.UrlMap.closeOrder.business : BasePay.UrlMap.closeOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
       out_trade_no: data.out_trade_no,
     })

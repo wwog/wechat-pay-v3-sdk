@@ -247,7 +247,7 @@ export class WechatPayV3Base {
    * @param data 待签名数据
    * @returns
    */
-  protected sha256WithRSA(data: string) {
+  sha256WithRSA(data: string) {
     return crypto.createSign('RSA-SHA256').update(data).sign(this.privateKey, 'base64')
   }
   /**
@@ -256,7 +256,7 @@ export class WechatPayV3Base {
    * @param signature 签名
    * @param data 待验签数据
    */
-  protected sha256WithRsaVerify(serial: string, signature: string, data: string) {
+  sha256WithRsaVerify(serial: string, signature: string, data: string) {
     const cert = this.certificates.find(item => item.serial_no === serial)
     if (!cert) {
       //这里直接抛错,因为证书并非api下载使用,过期或不存在逻辑上不会出现。如果出现打印当前证书列表,方便调试
@@ -275,7 +275,7 @@ export class WechatPayV3Base {
    * @param ciphertext  密文
    * @returns
    */
-  protected aesGcmDecrypt(options: { ciphertext: string; nonce: string; associated_data: string }) {
+  aesGcmDecrypt(options: { ciphertext: string; nonce: string; associated_data: string }) {
     return decryptToString_AES({
       ...options,
       key: this.apiV3Key,
@@ -558,7 +558,16 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     }
     return new ApiClass(base)
   }
-  const { downloadFile, publicEncrypt, publicEncryptObjectPaths, uploadImage, uploadVideo } = base
+  const {
+    downloadFile,
+    publicEncrypt,
+    publicEncryptObjectPaths,
+    uploadImage,
+    uploadVideo,
+    aesGcmDecrypt,
+    sha256WithRSA,
+    sha256WithRsaVerify,
+  } = base
   return {
     use,
     downloadFile,
@@ -566,6 +575,10 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     publicEncryptObjectPaths,
     uploadImage,
     uploadVideo,
+    sha256WithRSA,
+    aesGcmDecrypt,
+    sha256WithRsaVerify,
+    base: base!,
   }
 }
 
