@@ -1,7 +1,5 @@
 <p align="center">
-<a href="https://www.npmjs.com/package/wechat-pay-v3
-"><img src="https://img.shields.io/npm/v/wechat-pay-v3
-.svg" alt="npm package"></a>
+<a href="https://www.npmjs.com/package/wechat-pay-v3"><img src="https://img.shields.io/npm/v/wechat-pay-v3.svg" alt="npm package"></a>
 </p>
 
 # 微信支付 V3SDK
