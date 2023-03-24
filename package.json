@@ -1,6 +1,6 @@
 {
   "name": "wechat-pay-v3",
-  "version": "2.1.18",
+  "version": "2.1.19",
   "description": "wechat-pay-v3",
   "files": [
     "dist"
