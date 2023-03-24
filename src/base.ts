@@ -129,6 +129,7 @@ export class WechatPayV3Base {
       headers: {
         Accept: 'application/json',
         'User-Agent': this.userAgent,
+        'Content-Type': 'application/json',
       },
     })
 
@@ -245,7 +246,7 @@ export class WechatPayV3Base {
   /**
    * 私钥签名
    * @param data 待签名数据
-   * @returns
+   * @returns base64编码的签名
    */
   sha256WithRSA(data: string) {
     return crypto.createSign('RSA-SHA256').update(data).sign(this.privateKey, 'base64')

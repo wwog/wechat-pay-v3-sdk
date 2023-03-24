@@ -35,7 +35,7 @@ export class BasePay {
       business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/{out_trade_no}/close',
     },
   } as const
-  constructor(private base: WechatPayV3Base) {}
+  constructor(public base: WechatPayV3Base) {}
 
   //=========================================下单
   private async _order(data: any) {

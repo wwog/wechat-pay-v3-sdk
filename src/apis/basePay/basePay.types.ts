@@ -262,3 +262,10 @@ export interface QueryOrderGoodsDetail {
 export interface QueryOrderResult_Business extends BaseQueryOrderResult, BusinessToken {}
 
 export interface QueryOrderResult_Provider extends BaseQueryOrderResult, ProviderToken, SubToken {}
+
+export interface ReqPaymentParams {
+  /** appid,若下单时候传了sub_appid,须为sub_appid的值 */
+  appId: string
+  /** 预支付订单号,下单接口返回 */
+  prepay_id: string
+}

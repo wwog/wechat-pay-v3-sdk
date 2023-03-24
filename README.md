@@ -1,3 +1,9 @@
+<p align="center">
+<a href="https://www.npmjs.com/package/wechat-pay-v3
+"><img src="https://img.shields.io/npm/v/wechat-pay-v3
+.svg" alt="npm package"></a>
+</p>
+
 # 微信支付 V3SDK
 
 - 🛠️ 极易扩展
@@ -7,6 +13,8 @@
 - 🛠️ 自动更新平台证书
 
 - 🛠️ 支持直连商户体系和服务商体系
+
+- 🛠️ 支持 hook (通过hook可以实现日志打印,例如将域名其他国家的微信支付 等)
 
 ## 安装
 
@@ -24,7 +32,7 @@ npm install wechat-pay-v3
 
 ### hook
 
-sdk 提供了三个 hook,可以在请求前后进行一些操作,比如打印日志,记录请求时间等。
+sdk 提供了三个 hook,可以在请求前后进行一些操作,比如打印日志,记录请求时间,更换请求域名等。
 
 hook 方法传递的参数都是原始引用,请注意不要轻易修改,除非你知道你在做什么。
 
@@ -64,7 +72,7 @@ const base = new WechatPayV3Base(
 
 ### 调用方式 1 (推荐)容器调用
 
-容器默认单例模式,同个商户号只会返回一个实例。容器返回除了 use 方法外,基于 base 实例的部分方法和实例本身也会暴露出来。
+容器默认单例模式,同个商户号只会返回一个实例。容器返回除了 use 方法外,基于 base 实例的部分方法和实例本身也会暴露出来。容器 use 的功能类也是单例模式。
 
 ```typescript
 import { apiController, ContainerOptions, Applyment } from 'wechat-pay-v3'
@@ -88,6 +96,22 @@ const businessOne: ContainerOptions = {
 }
 
 const b1 = apiController(businessOne)
+/*
+ b1 : {
+    use,
+    downloadFile,
+    publicEncrypt,
+    publicEncryptObjectPaths,
+    uploadImage,
+    uploadVideo,
+    sha256WithRSA,
+    aesGcmDecrypt,
+    sha256WithRsaVerify,
+    handleCallback,
+    resVerify,
+    base
+ }
+*/
 //happy coding....
 b1.use(Applyment).submitApplications()
 ```
@@ -132,9 +156,11 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
   - 查询申请状态 queryApplymentState
   - 修改结算账户 modifySettlement
   - 查询结算账户 querySettlement
-- 基础支付 BasePay(不同类型除了下单基本调用接口一致,如果想扩展,可以继承 BasePay，重写下单方法)[扩展基础支付](#addPayClass)
+- 基础支付 BasePay [扩展基础支付](#addPayClass)
+> 已下均继承自 BasePay,BasePay将包含了所有的方法
   - JSAPI 支付 JSPay
   - 小程序支付 MiniProgram
+    - 获取小程序支付参数 getPayParams
 
 ## todo
 
@@ -162,7 +188,7 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 
 ## 实例代码
 
-### <a id="addPayClass">扩展功能类</a>
+### <a id="addClass">扩展功能类</a>
 
 封装 sdk 的目的是解决现有项目的需求,所以优先保证的是架构的扩展性,而非接口完整。
 
