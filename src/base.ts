@@ -373,16 +373,16 @@ export class WechatPayV3Base {
    */
   resVerify<H extends Record<string, any>, B extends Record<string, any>>(headers: H, body?: B) {
     const {
-      'Wechatpay-Timestamp': timestamp,
-      'Wechatpay-Nonce': nonce,
-      'Wechatpay-Signature': signature,
-      'Wechatpay-Serial': serial,
+      'wechatpay-timestamp': timestamp,
+      'wechatpay-nonce': nonce,
+      'wechatpay-signature': signature,
+      'wechatpay-serial': serial,
     } = headers
     let bodyStr = ''
     if (body) {
       bodyStr = Object.keys(body).length !== 0 ? JSON.stringify(body) : ''
     }
-
+    console.log(this)
     //构建验签名串
     const signStr = this.buildMessageVerify(timestamp, nonce, bodyStr)
     //验证签名
@@ -619,18 +619,19 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     handleCallback,
     resVerify,
   } = base
+
   return {
     use,
-    downloadFile,
-    publicEncrypt,
-    publicEncryptObjectPaths,
-    uploadImage,
-    uploadVideo,
-    sha256WithRSA,
-    aesGcmDecrypt,
-    sha256WithRsaVerify,
-    handleCallback,
-    resVerify,
+    downloadFile: downloadFile.bind(base),
+    publicEncrypt: publicEncrypt.bind(base),
+    publicEncryptObjectPaths: publicEncryptObjectPaths.bind(base),
+    uploadImage: uploadImage.bind(base),
+    uploadVideo: uploadVideo.bind(base),
+    sha256WithRSA: sha256WithRSA.bind(base),
+    aesGcmDecrypt: aesGcmDecrypt.bind(base),
+    sha256WithRsaVerify: sha256WithRsaVerify.bind(base),
+    handleCallback: handleCallback.bind(base),
+    resVerify: resVerify.bind(base),
     base: base!,
   }
 }
