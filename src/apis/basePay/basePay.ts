@@ -23,8 +23,8 @@ export class BasePay {
       business: `https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi`,
     },
     transactionIdQueryOrder: {
-      provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/{id}',
-      business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/id/{id}',
+      provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/{transaction_id}',
+      business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/id/{transaction_id}',
     },
     outTradeNoQueryOrder: {
       provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}',
@@ -56,14 +56,15 @@ export class BasePay {
 
   //=========================================查询订单_通过微信订单号
   private async _transactionIdQueryOrder<T = any>(data: any) {
+    const { transaction_id, ...query } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness
       ? BasePay.UrlMap.transactionIdQueryOrder.business
       : BasePay.UrlMap.transactionIdQueryOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
-      id: data.transaction_id,
+      transaction_id,
     })
-    const result = await this.base.request.get<T>(apiUrl)
+    const result = await this.base.request.get<T>(apiUrl, { params: query })
     return result.data
   }
   /**
@@ -81,12 +82,13 @@ export class BasePay {
 
   //=========================================查询订单_通过商户订单号
   async _outTradeNoQueryOrder<T = any>(data: any) {
+    const { out_trade_no, ...query } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness ? BasePay.UrlMap.outTradeNoQueryOrder.business : BasePay.UrlMap.outTradeNoQueryOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
-      out_trade_no: data.out_trade_no,
+      out_trade_no,
     })
-    const result = await this.base.request.get<T>(apiUrl)
+    const result = await this.base.request.get<T>(apiUrl, { params: query })
     return result.data
   }
   /**
@@ -104,12 +106,13 @@ export class BasePay {
 
   //=========================================关闭订单
   private async _closeOrder(data: any) {
+    const { out_trade_no, ...body } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness ? BasePay.UrlMap.closeOrder.business : BasePay.UrlMap.closeOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
-      out_trade_no: data.out_trade_no,
+      out_trade_no,
     })
-    const result = await this.base.request.post(apiUrl)
+    const result = await this.base.request.post(apiUrl, body)
     return result.data
   }
   /**

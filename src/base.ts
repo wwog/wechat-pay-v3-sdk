@@ -267,7 +267,7 @@ export class WechatPayV3Base {
       })
       throw new Error('证书序列号错误')
     }
-    return crypto.createVerify('RSA-SHA256').update(data).verify(cert.serial_no, signature, 'base64')
+    return crypto.createVerify('RSA-SHA256').update(data).verify(cert.publicKey, signature, 'base64')
   }
   /**
    * 解密平台响应
@@ -382,7 +382,6 @@ export class WechatPayV3Base {
     if (body) {
       bodyStr = Object.keys(body).length !== 0 ? JSON.stringify(body) : ''
     }
-    console.log(this)
     //构建验签名串
     const signStr = this.buildMessageVerify(timestamp, nonce, bodyStr)
     //验证签名
