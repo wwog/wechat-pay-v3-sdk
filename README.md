@@ -12,7 +12,7 @@
 
 - 🛠️ 支持直连商户体系和服务商体系
 
-- 🛠️ 支持 hook (通过hook可以实现日志打印,例如将域名其他国家的微信支付 等)
+- 🛠️ hook 请求过程
 
 ## 安装
 
@@ -70,7 +70,7 @@ const base = new WechatPayV3Base(
 
 ### 调用方式 1 (推荐)容器调用
 
-容器默认单例模式,同个商户号只会返回一个实例。容器返回除了 use 方法外,基于 base 实例的部分方法和实例本身也会暴露出来。容器 use 的功能类也是单例模式。
+容器默认单例模式,同个商户号只会返回一个实例。容器 use 的功能类也是单例模式。
 
 ```typescript
 import { apiController, ContainerOptions, Applyment } from 'wechat-pay-v3'
@@ -142,7 +142,7 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
     - 上传视频 uploadVideo
   - 加解密
     - 公钥加密 publicEncrypt
-    - 公钥加密(批量) publicEncryptObjectPaths example: publicEncryptObjectPaths({a: 1,b:2}, ['a']) //提供对象属性路径的数组即可返回加密后的对象,具体看 JSDOC
+    - 公钥加密(批量) publicEncryptObjectPaths
     - AESGCM 解密 aesGcmDecrypt
     - SHA256 签名 sha256WithRSA
     - SHA256 验签 sha256WithRsaVerify
@@ -160,29 +160,6 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
   - 小程序支付 MiniProgram
     - 获取小程序支付参数 getPayParams
 
-## todo
-
-- [ ] 支付相关接口
-
-## 贡献须知
-
-- 类型和 JSDOC 完整
-- 请求一律返回 data 且描述好 data 的类型,这样取值能看到是个啥,而非把具体值返回去
-  - 如果返回的数据没有 data，例如根据状态码返回成功与否的情况返回 boolean 且描述出来
-- 命名规范
-  - 直连商户命名直接使用具体方法做名称,例如:order
-  - 服务商命名使用 [方法名]OnProvider,例如:orderOnProvider
-- 直连和服务商的方法分开,不要 类型或来书写,因为 typescript 提示不会缩减范围导致类型提示错误(函数重载也可以实现功能,不过我选择了分开,这样更加清晰)
-- 由于直连商户和服务商的调用参数往往不一样,调用参数统一全量填写，而非引用配置的方式。这样可以保证参数的正确性。例如需要 mchid 和 openid,那么就需要传入 mchid 和 openid,而不是引用配置的 mchid。
-- 封装了 replaceStrWithTokenObject,这个方法会将文本中的{token}替换为对象中的 token 属性,用来合成调用时需要参数的 url, 而不是在调用时拼接,也和微信的文档中 url 保持一致
-
-## 关于发布及测试
-
-因为哪怕是沙盒环境也需要真实的敏感信息作为提交数据,这些东西并不能放出来,如果有人愿意贡献一个可公开不用的商户请联系我,这并不会明文保存项目里。
-
-提交发布仅为我项目实际用到了或者测试着写过确认了无误才会发布,所以源码里有的功能不一定会发布到 npm。
-
-其余的工具方法没有写单元测试，都很简单且具体。
 
 ## 实例代码
 
@@ -243,3 +220,23 @@ apiController(businessOne).use(MyPay).transactionIdQueryOrder({
   /* ... */
 })
 ```
+
+## 贡献须知
+
+- 类型和 JSDOC 完整
+- 请求一律返回 data 且描述好 data 的类型,这样取值能看到是个啥,而非把具体值返回去
+  - 如果返回的数据没有 data，例如根据状态码返回成功与否的情况返回 boolean 且描述出来
+- 命名规范
+  - 直连商户命名直接使用具体方法做名称,例如:order
+  - 服务商命名使用 [方法名]OnProvider,例如:orderOnProvider
+- 直连和服务商的方法分开,不要 类型或来书写,因为 typescript 提示不会缩减范围导致类型提示错误(函数重载也可以实现功能,不过我选择了分开,这样更加清晰)
+- 由于直连商户和服务商的调用参数往往不一样,调用参数统一全量填写，而非引用配置的方式。这样可以保证参数的正确性。例如需要 mchid 和 openid,那么就需要传入 mchid 和 openid,而不是引用配置的 mchid。
+- 封装了 replaceStrWithTokenObject,这个方法会将文本中的{token}替换为对象中的 token 属性,用来合成调用时需要参数的 url, 而不是在调用时拼接,也和微信的文档中 url 保持一致
+
+## 关于发布及测试
+
+因为哪怕是沙盒环境也需要真实的敏感信息作为提交数据,这些东西并不能放出来,如果有人愿意贡献一个可公开不用的商户请联系我,这并不会明文保存项目里。
+
+提交发布仅为我项目实际用到了或者测试着写过确认了无误才会发布,所以源码里有的功能不一定会发布到 npm。
+
+其余的工具方法没有写单元测试，都很简单且具体。
