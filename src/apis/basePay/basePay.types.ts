@@ -269,3 +269,154 @@ export interface ReqPaymentParams {
   /** 预支付订单号,下单接口返回 */
   prepay_id: string
 }
+
+export interface GoodsDetail {
+  /** 商户侧商品编码 */
+  merchant_goods_id: string
+  /** 微信侧商品编码 */
+  wechatpay_goods_id?: string
+  /** 商品名称 */
+  goods_name?: string
+  /** 商品单价 */
+  unit_price: number
+  /** 商品退款金额 */
+  refund_amount: number
+  /** 商品退款数量 */
+  refund_quantity: number
+}
+
+export interface RefundAmount {
+  /** 订单总金额，单位为分 */
+  total: number
+  /** 订单退款金额，单位为分 */
+  refund: number
+  /** 货币类型，符合ISO4217标准的三位字母代码，默认人民币：CNY */
+  currency: string
+}
+
+export interface Refund_Business {
+  /** 微信支付订单号 */
+  transaction_id?: string
+  /** 商户订单号 */
+  out_trade_no?: string
+  /** 商户退款单号 */
+  out_refund_no: string
+  /** 退款原因 */
+  reason?: string
+  /** 退款结果通知url */
+  notify_url?: string
+  /** 资金账户 */
+  funds_account?: string
+  /** 单品列表信息，微信支付后台会根据此参数控制向用户展示商品详情 */
+  goods_detail?: GoodsDetail[]
+}
+
+export interface Refund_Provider extends Refund_Business {
+  /** 子商户号，服务商模式下必填 */
+  sub_mchid: string
+}
+
+export interface RefundResult {
+  /** 微信支付退款单号 */
+  refund_id: string
+  /** 商户退款单号 */
+  out_refund_no: string
+  /** 微信支付订单号 */
+  transaction_id: string
+  /** 商户订单号 */
+  out_trade_no: string
+  /** 退款渠道 */
+  channel: ResultRefundChannelEnum
+  /** 退款入账账户 */
+  user_received_account: string
+  /** 退款成功时间 */
+  success_time?: string
+  /** 退款创建时间 */
+  create_time: string
+  /** 退款状态 */
+  status: ResultRefundStatusEnum
+  /** 资金账户 */
+  funds_account?: ResultFundsAccountEnum
+  /** 金额信息 */
+  amount: ResultRefundAmount
+  /** 优惠退款信息 */
+  promotion_detail: any
+}
+
+export enum ResultRefundStatusEnum {
+  /** 退款成功 */
+  SUCCESS = 'SUCCESS',
+  /** 退款关闭 */
+  CLOSED = 'CLOSED',
+  /** 退款处理中 */
+  PROCESSING = 'PROCESSING',
+  /** 退款异常 */
+  ABNORMAL = 'ABNORMAL',
+}
+
+export enum ResultRefundChannelEnum {
+  /** 原路退款 */
+  ORIGINAL = 'ORIGINAL',
+  /** 退回到余额 */
+  BALANCE = 'BALANCE',
+  /** 原账户异常退到其他余额账户 */
+  OTHER_BALANCE = 'OTHER_BALANCE',
+  /** 原银行卡异常退到其他银行卡 */
+  OTHER_BANKCARD = 'OTHER_BANKCARD',
+}
+
+export enum ResultFundsAccountEnum {
+  /** 未结算资金 */
+  UNSETTLED = 'UNSETTLED',
+  /** 可用余额 */
+  AVAILABLE = 'AVAILABLE',
+  /** 不可用余额 */
+  UNAVAILABLE = 'UNAVAILABLE',
+  /** 运营户 */
+  OPERATION = 'OPERATION',
+  /** 基本账户（含可用余额和不可用余额） */
+  BASIC = 'BASIC',
+}
+
+export interface ResultRefundAmount {
+  /** 订单总金额，单位为分 */
+  total: number
+  /** 退款标价金额，单位为分，可以做部分退款 */
+  refund: number
+  /** 退款出资的账户类型及金额信息 */
+  from?: {
+    /** 资金账户类型 */
+    account: 'AVAILABLE' | 'UNAVAILABLE'
+    /** 退款金额 */
+    amount: number
+  }[]
+  /** 现金支付金额，单位为分，只能为整数 */
+  payer_total: number
+  /** 退款给用户的金额，不包含所有优惠券金额 */
+  payer_refund: number
+  /** 去掉非充值代金券退款金额后的退款金额，单位为分，退款金额=申请退款金额-非充值代金券退款金额，退款金额<=申请退款金额 */
+  settlement_refund: number
+  /** 应结订单金额=订单金额-免充值代金券金额，应结订单金额<=订单金额，单位为分 */
+  settlement_total: number
+  /** 优惠退款金额<=退款金额，退款金额-代金券或立减优惠退款金额为现金，说明详见代金券或立减优惠，单位为分 */
+  discount_refund: number
+  /** 退款币种 */
+  currency: string
+  /** 手续费退款金额，单位为分 */
+  refund_fee?: number
+}
+
+export interface ResultPromotionDetail {
+  /** 券或者立减优惠id */
+  promotion_id: string
+  /** 枚举值：GLOBAL：全场代金券 SINGLE：单品优惠 */
+  scope: 'GLOBAL' | 'SINGLE'
+  /** 枚举值： COUPON：代金券，需要走结算资金的充值型代金券 DISCOUNT：优惠券，不走结算资金的免充值型优惠券 */
+  type: 'COUPON' | 'DISCOUNT'
+  /** 用户享受优惠的金额（优惠券面额=微信出资金额+商家出资金额+其他出资方金额 ），单位为分 */
+  amount: number
+  /** 优惠退款金额<=退款金额，退款金额-代金券或立减优惠退款金额为用户支付的现金，说明详见代金券或立减优惠，单位为分 */
+  refund_amount: number
+  /** 商品列表 */
+  goods_detail?: GoodsDetail[]
+}

@@ -9,6 +9,9 @@ import type {
   JSAPI_QueryOrder_tid_Provider,
   QueryOrderResult_Business,
   QueryOrderResult_Provider,
+  RefundResult,
+  Refund_Business,
+  Refund_Provider,
 } from './basePay.types'
 
 /**
@@ -33,6 +36,9 @@ export class BasePay {
     closeOrder: {
       provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}/close',
       business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/{out_trade_no}/close',
+    },
+    refund: {
+      apiUrl: 'https://api.mch.weixin.qq.com/v3/refund/domestic/refunds', //退款都是一个
     },
   } as const
   constructor(public base: WechatPayV3Base) {}
@@ -113,18 +119,41 @@ export class BasePay {
       out_trade_no,
     })
     const result = await this.base.request.post(apiUrl, body)
-    return result.data
+    return result.status
   }
   /**
    * 关闭订单-直连商户
+   * @returns status 如果为204,则关闭成功
    */
   async closeOrder(data: JSAPI_QueryOrder_outTradeNo_Business) {
     return this._closeOrder(data)
   }
   /**
    * 关闭订单-服务商
+   * @returns status 如果为204,则关闭成功
    */
   async closeOrderOnProvider(data: JSAPI_QueryOrder_outTradeNo_Provider) {
     return this._closeOrder(data)
+  }
+
+  //=========================================退款
+  private async _refund<T = any>(data: any) {
+    const { apiUrl } = BasePay.UrlMap.refund
+    const result = await this.base.request.post<T>(apiUrl, data)
+    return result.data
+  }
+
+  /**
+   * 退款-直连商户
+   */
+  async refund(data: Refund_Business) {
+    return this._refund<RefundResult>(data)
+  }
+
+  /**
+   * 退款-服务商
+   */
+  async refundOnProvider(data: Refund_Provider) {
+    return this._refund<RefundResult>(data)
   }
 }
