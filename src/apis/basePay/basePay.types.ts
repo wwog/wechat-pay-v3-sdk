@@ -420,3 +420,21 @@ export interface ResultPromotionDetail {
   /** 商品列表 */
   goods_detail?: GoodsDetail[]
 }
+
+export interface TradeBillParams {
+  bill_date: string
+  sub_mchid?: string
+  /**
+   * ALL：返回当日所有订单信息（不含充值退款订单）
+   * SUCCESS：返回当日成功支付的订单（不含充值退款订单）
+   * REFUND：返回当日退款订单（不含充值退款订单）
+   */
+  bill_type?: 'ALL' | 'SUCCESS' | 'REFUND'
+  tar_type?: 'GZIP'
+}
+
+export interface BillResult {
+  download_url: string
+  hash_type: 'SHA1'
+  hash_value: string
+}

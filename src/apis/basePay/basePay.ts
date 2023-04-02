@@ -1,6 +1,7 @@
 import type { WechatPayV3Base } from 'src/base'
 import { replaceStrWithTokenObject } from 'src/utils/index'
 import type {
+  BillResult,
   JSAPI_Oder_Business,
   JSAPI_Oder_Provider,
   JSAPI_QueryOrder_outTradeNo_Business,
@@ -12,6 +13,7 @@ import type {
   RefundResult,
   Refund_Business,
   Refund_Provider,
+  TradeBillParams,
 } from './basePay.types'
 
 /**
@@ -39,6 +41,12 @@ export class BasePay {
     },
     refund: {
       apiUrl: 'https://api.mch.weixin.qq.com/v3/refund/domestic/refunds', //退款都是一个
+    },
+    queryRefund: {
+      apiUrl: 'https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/{out_refund_no}', //查询退款都是一个
+    },
+    applyTradeBill: {
+      apiUrl: 'https://api.mch.weixin.qq.com/v3/bill/tradebill',
     },
   } as const
   constructor(public base: WechatPayV3Base) {}
@@ -155,5 +163,49 @@ export class BasePay {
    */
   async refundOnProvider(data: Refund_Provider) {
     return this._refund<RefundResult>(data)
+  }
+  //=========================================查询退款
+  private async _queryRefund<T = any>(data: any) {
+    const { out_refund_no, sub_mchid } = data
+    let apiUrl = replaceStrWithTokenObject(BasePay.UrlMap.queryRefund.apiUrl, {
+      out_refund_no,
+    })
+    if (sub_mchid) {
+      apiUrl += `?sub_mchid=${sub_mchid}`
+    }
+    const result = await this.base.request.get<T>(apiUrl)
+    return result.data
+  }
+  /**
+   * 查询退款-直连商户
+   */
+  async queryRefund(data: { out_refund_no: string }) {
+    return this._queryRefund<RefundResult>(data)
+  }
+  /**
+   * 查询退款-服务商
+   */
+  async queryRefundOnProvider(data: { out_refund_no: string; sub_mchid: string }) {
+    return this._queryRefund<RefundResult>(data)
+  }
+  //=========================================申请交易账单
+  private async _applyTradeBill(data: any) {
+    const { apiUrl } = BasePay.UrlMap.applyTradeBill
+    const result = await this.base.request.get<BillResult>(apiUrl, {
+      params: data,
+    })
+    return result.data
+  }
+  /**
+   * 申请交易账单-直连商户
+   */
+  async applyTradeBill(data: Omit<TradeBillParams, 'sub_mchid'>) {
+    return this._applyTradeBill(data)
+  }
+  /**
+   * 申请交易账单-服务商
+   */
+  async applyTradeBillOnProvider(data: TradeBillParams) {
+    return this._applyTradeBill(data)
   }
 }

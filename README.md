@@ -24,7 +24,10 @@ npm install wechat-pay-v3
 
 ## 说明
 
-大多数情况下,提供的方法对于加密参数都是自动的,部分过于复杂的接口,在 JSDOC 提示中会有 notAutoEncrypt 标注
+sdk分为工具函数,base类和功能类。工具函数针对应用场景代码封装,base类为基础类是sdk的核心,功能类为具体的功能实现。sdk实现的功能类列表可在下方表格中查看。
+
+大多数情况下,提供的方法对于加密参数都是自动的,部分过于复杂的接口,在 JSDOC 提示中会有 notAutoEncrypt 标注。
+
 
 ## 使用
 
@@ -155,11 +158,10 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
   - 修改结算账户 modifySettlement
   - 查询结算账户 querySettlement
 - 基础支付 BasePay [扩展基础支付](#addPayClass)
-> 已下均继承自 BasePay,BasePay将包含了所有的方法
+  > 已下均继承自 BasePay,BasePay 将包含了所有的方法
   - JSAPI 支付 JSPay
   - 小程序支付 MiniProgram
     - 获取小程序支付参数 getPayParams
-
 
 ## 实例代码
 
@@ -187,19 +189,51 @@ class Others {
   }
 }
 
-const baseIns = new WechatPayV3Base(businessOne)
+const baseIns = new WechatPayV3Base({
+  /* xxx */
+})
 const others = new Others(baseIns)
 //直接调用
 others.test()
 //或者通过容器调用
-apiController(businessOne).use(Others).test()
+apiController({
+  /* xxx */
+})
+  .use(Others)
+  .test()
+```
+
+### 通知接收
+
+base 实例上封装了通用的 handleCallback,他的功能是进行回调验签,通过后返回的 resource 对象会自动解密。
+
+```typescript
+import { apiController } from 'wechat-pay-v3'
+
+//假定这里是一个接口
+router.post('/notify', async (req, res) => {
+  try {
+    const wxapi = apiController({
+      /* xxx */
+    })
+    //handleCallback接收两个参数,第一个是请求头,第二个是请求体。
+    //实际并不一定是这样的,请根据实际情况调整。
+    const data = await wxapi.handleCallback(req.headers, req.body)
+    res.status(204).send()
+  } catch (e) {
+    res.status(400).send({
+      message: e.message,
+      code: 'FAIL',
+    })
+  }
+})
 ```
 
 ### <a id="addPayClass">扩展基础支付</a>
 
 支付类其实和上方的扩展功能类一样,只是为了方便使用,所以提供了一个 BasePay 类,继承 BasePay 类,重写下单方法即可。
 请注意,BasePay 默认按照 JSApiPay 完成，不修改其他方法的前提是其他方法的接口同 JSAPI 支付一致。(大多相同,没一个个看)
-或者你可以完整的编写新的支付类,这样可以保证你的代码更加清晰,查看上方的扩展功能类或basePay源码。
+或者你可以完整的编写新的支付类,这样可以保证你的代码更加清晰,查看上方的扩展功能类或 basePay 源码。
 
 ```typescript
 import { BasePay } from 'wechat-pay-v3'
