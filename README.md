@@ -24,10 +24,11 @@ npm install wechat-pay-v3
 
 ## 说明
 
-sdk分为工具函数,base类和功能类。工具函数针对应用场景代码封装,base类为基础类是sdk的核心,功能类为具体的功能实现。sdk实现的功能类列表可在下方表格中查看。
+sdk 分为工具函数,base 类和功能类。工具函数针对应用场景代码封装,base 类为基础类是 sdk 的核心,功能类为具体的功能实现。sdk 实现的功能类列表可在下方表格中查看。
+
+base 类提供了验签方法`resVerify`,但并没有给功能方法添加自动验签。除了封装的 handleCallback 方法,其他情况下您可以通过 hook 的方式在 onResponse 中进行验签，下方有实例代码。
 
 大多数情况下,提供的方法对于加密参数都是自动的,部分过于复杂的接口,在 JSDOC 提示中会有 notAutoEncrypt 标注。
-
 
 ## 使用
 
@@ -47,14 +48,20 @@ apiController(
     /* config */
   },
   {
-    onRequsetBefore(config) {
+    onRequsetBefore(config, instance) {
       console.log(config)
     },
-    onRequsetAfter(config) {
+    onRequsetAfter(config, instance) {
       console.log(config)
     },
-    onResponse(res) {
+    onResponse(res, instance) {
       console.log(res)
+      //如果需要验签
+      const result = instance.resVerify(res.headers, res.data)
+
+      //部分接口是不需要验签的，不要轻易直接抛错
+      //您可以将验签结果加入 res 中，在后续您的操作中使用
+      res.verifyResult = result
     },
   },
 )
@@ -135,6 +142,7 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 ## 功能
 
 - Base ↓↓↓ 均为 WechatPayV3Base 的实例方法或属性
+  - hook事件 setEvents
   - 证书相关
     - 获取证书 getCertificates
     - 更新证书 updateCertificates

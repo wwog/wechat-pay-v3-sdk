@@ -191,7 +191,9 @@ export class WechatPayV3Base {
       console.log('init updateCertificates fail', error)
     })
   }
-
+  setEvents(events: WechatBaseEventOPtions) {
+    this.events = events
+  }
   /**
    * 更新平台证书
    * @description 会判断缓存是否过期,如果过期则更新,否则不更新.
@@ -617,6 +619,7 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     sha256WithRsaVerify,
     handleCallback,
     resVerify,
+    setEvents,
   } = base
 
   return {
@@ -631,6 +634,7 @@ export function apiContainer(options: ContainerOptions, events?: WechatBaseEvent
     sha256WithRsaVerify: sha256WithRsaVerify.bind(base),
     handleCallback: handleCallback.bind(base),
     resVerify: resVerify.bind(base),
+    setEvents: setEvents.bind(base),
     base: base!,
   }
 }
