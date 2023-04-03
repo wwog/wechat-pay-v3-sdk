@@ -57,11 +57,11 @@ apiController(
     onResponse(res, instance) {
       console.log(res)
       //如果需要验签
-      const result = instance.resVerify(res.headers, res.data)
+      const verifyResult = instance.resVerify(res.headers, res.data)
 
       //部分接口是不需要验签的，不要轻易直接抛错
-      //您可以将验签结果加入 res 中，在后续您的操作中使用
-      res.verifyResult = result
+      //您可以将验签结果加入 res.data 中,大多数方法返回res.data
+      res.data.verifyResult = result
     },
   },
 )
@@ -142,7 +142,7 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 ## 功能
 
 - Base ↓↓↓ 均为 WechatPayV3Base 的实例方法或属性
-  - hook事件 setEvents
+  - hook 事件 setEvents
   - 证书相关
     - 获取证书 getCertificates
     - 更新证书 updateCertificates
