@@ -126,7 +126,7 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 
 ## 功能
 
-- Base ↓↓↓ 均为 WechatPayV3Base 的实例方法或属性
+- WechatPayV3Base
   - hook 事件 setEvents
   - 证书相关
     - 获取证书 getCertificates
@@ -169,7 +169,7 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
     - applyFundFlowBillOnProvider
   - 申请单个子商户资金账单 (特属服务商)
     - applySubMerchantFundFlowBill
-  - 下载账单 downloadBill
+  - 下载账单 downloadBill (返回buffer,需要保存至本地的话,WechatPayV3Base上的downloadFile更方便)
   - 获取前端调起支付参数 getPayParams (仅部分实现)
     > 已下均继承自 BasePay,BasePay 将包含了所有的方法
 - JSAPI 支付 JSPay
