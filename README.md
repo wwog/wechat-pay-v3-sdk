@@ -34,11 +34,9 @@ base 类提供了验签方法`resVerify`,但并没有给功能方法添加自动
 
 ### hook
 
-sdk 提供了三个 hook,可以在请求前后进行一些操作,比如打印日志,记录请求时间,更换请求域名等。
+请求流程：[onRequsetBefore] -> [sdkWork] -> [onRequsetAfter] -> [onResponse]
 
 hook 方法传递的参数都是原始引用,请注意不要轻易修改,除非你知道你在做什么。
-
-请求流程：[onRequsetBefore] -> [sdkWork] -> [onRequsetAfter] -> [onResponse]
 
 sdkWork：为请求的核心逻辑,在这个阶段会对参数进行加密,签名,更新证书等操作。
 
@@ -104,23 +102,6 @@ const businessOne: ContainerOptions = {
 }
 
 const b1 = apiController(businessOne)
-/*
- b1 : {
-    use,
-    downloadFile,
-    publicEncrypt,
-    publicEncryptObjectPaths,
-    uploadImage,
-    uploadVideo,
-    sha256WithRSA,
-    aesGcmDecrypt,
-    sha256WithRsaVerify,
-    handleCallback,
-    resVerify,
-    base
- }
-*/
-//happy coding....
 b1.use(Applyment).submitApplications()
 ```
 
@@ -138,6 +119,10 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 | -------- | ------------------------------------------------------------------------------------ | --------- | ------ | -------- |
 | 特约商户 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter7_1_4.shtml) | Applyment | √      |          |
 | 基础支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | BasePay   | √      | √        |
+| JSAPI支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay   | √      | √        |
+| 小程序支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay   | √      | √        |
+| APP支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay   | √      | √        |
+
 
 ## 功能
 
@@ -166,10 +151,30 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
   - 修改结算账户 modifySettlement
   - 查询结算账户 querySettlement
 - 基础支付 BasePay [扩展基础支付](#addPayClass)
+  - 下单 order
+    -  orderOnProvider
+  - 商户订单号查订单 outTradeNoQueryOrder
+    -  outTradeNoQueryOrderOnProvider
+  - 微信订单号查订单 transactionIdQueryOrder
+    -  transactionIdQueryOrderOnProvider
+  - 关闭订单 closeOrder
+    -  closeOrderOnProvider
+  - 申请退款 refund
+    -  refundOnProvider
+  - 查询退款 queryRefund
+    -  queryRefundOnProvider
+  - 申请交易账单 applyTradeBill
+    -  applyTradeBillOnProvider
+  - 申请资金账单 applyFundFlowBill
+    -  applyFundFlowBillOnProvider
+  - 申请单个子商户资金账单 (特属服务商)
+    -  applySubMerchantFundFlowBill
+  - 下载账单 downloadBill
+  - 获取前端调起支付参数 getPayParams (仅部分实现)
   > 已下均继承自 BasePay,BasePay 将包含了所有的方法
-  - JSAPI 支付 JSPay
-  - 小程序支付 MiniProgram
-    - 获取小程序支付参数 getPayParams
+- JSAPI 支付 JSPay
+- 小程序支付 MiniProgramPay
+- APP 支付 AppPay
 
 ## 实例代码
 

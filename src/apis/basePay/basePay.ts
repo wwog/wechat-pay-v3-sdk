@@ -2,8 +2,9 @@ import type { WechatPayV3Base } from 'src/base'
 import { replaceStrWithTokenObject } from 'src/utils/index'
 import type {
   BillResult,
-  JSAPI_Oder_Business,
-  JSAPI_Oder_Provider,
+  FundflowBillParams,
+  JSAPIOder_Business,
+  JSAPIOder_Provider,
   JSAPI_QueryOrder_outTradeNo_Business,
   JSAPI_QueryOrder_outTradeNo_Provider,
   JSAPI_QueryOrder_tid_Business,
@@ -13,58 +14,66 @@ import type {
   RefundResult,
   Refund_Business,
   Refund_Provider,
+  SubMerchantFundflowBillParams,
+  SubMerchantFundflowBillResult,
   TradeBillParams,
 } from './basePay.types'
 
+const UrlMap = {
+  order: {
+    provider: `https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi`,
+    business: `https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi`,
+  },
+  transactionIdQueryOrder: {
+    provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/{transaction_id}',
+    business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/id/{transaction_id}',
+  },
+  outTradeNoQueryOrder: {
+    provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}',
+    business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/{out_trade_no}',
+  },
+  closeOrder: {
+    provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}/close',
+    business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/{out_trade_no}/close',
+  },
+  refund: {
+    apiUrl: 'https://api.mch.weixin.qq.com/v3/refund/domestic/refunds', //退款都是一个
+  },
+  queryRefund: {
+    apiUrl: 'https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/{out_refund_no}', //查询退款都是一个
+  },
+  applyTradeBill: {
+    apiUrl: 'https://api.mch.weixin.qq.com/v3/bill/tradebill',
+  },
+  fundflowBill: {
+    apiUrl: 'https://api.mch.weixin.qq.com/v3/bill/fundflowbill',
+  },
+  subFundflowBill: {
+    apiUrl: 'https://api.mch.weixin.qq.com/v3/bill/sub-merchant-fundflowbill',
+  },
+} as const
 /**
  * 基础支付
  * 默认以JSAPI接口构成,其他接口可继承此类进行扩展。
  * 除开下单接口,其余接口基本一致
  */
 export class BasePay {
-  static UrlMap = {
-    order: {
-      provider: `https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi`,
-      business: `https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi`,
-    },
-    transactionIdQueryOrder: {
-      provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/{transaction_id}',
-      business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/id/{transaction_id}',
-    },
-    outTradeNoQueryOrder: {
-      provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}',
-      business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/{out_trade_no}',
-    },
-    closeOrder: {
-      provider: 'https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}/close',
-      business: 'https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/{out_trade_no}/close',
-    },
-    refund: {
-      apiUrl: 'https://api.mch.weixin.qq.com/v3/refund/domestic/refunds', //退款都是一个
-    },
-    queryRefund: {
-      apiUrl: 'https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/{out_refund_no}', //查询退款都是一个
-    },
-    applyTradeBill: {
-      apiUrl: 'https://api.mch.weixin.qq.com/v3/bill/tradebill',
-    },
-  } as const
   constructor(public base: WechatPayV3Base) {}
 
   //=========================================下单
   private async _order(data: any) {
     //这里不用类型标注,因为typescript当前版本不会缩减范围
     const isBusiness = data.appid !== undefined
-    const apiUrl = isBusiness ? BasePay.UrlMap.order.business : BasePay.UrlMap.order.provider
+    const apiUrl = isBusiness ? UrlMap.order.business : UrlMap.order.provider
     const result = await this.base.request.post<{ prepay_id: string }>(apiUrl, data)
     return result.data
   }
   /** 下单-直连商户 */
-  async order(data: JSAPI_Oder_Business) {
+  async order(data: JSAPIOder_Business) {
     return this._order(data)
   }
   /** 下单-服务商 */
-  async orderOnProvider(data: JSAPI_Oder_Provider) {
+  async orderOnProvider(data: JSAPIOder_Provider) {
     return this._order(data)
   }
 
@@ -72,9 +81,7 @@ export class BasePay {
   private async _transactionIdQueryOrder<T = any>(data: any) {
     const { transaction_id, ...query } = data
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness
-      ? BasePay.UrlMap.transactionIdQueryOrder.business
-      : BasePay.UrlMap.transactionIdQueryOrder.provider
+    const _ = isBusiness ? UrlMap.transactionIdQueryOrder.business : UrlMap.transactionIdQueryOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
       transaction_id,
     })
@@ -98,7 +105,7 @@ export class BasePay {
   async _outTradeNoQueryOrder<T = any>(data: any) {
     const { out_trade_no, ...query } = data
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness ? BasePay.UrlMap.outTradeNoQueryOrder.business : BasePay.UrlMap.outTradeNoQueryOrder.provider
+    const _ = isBusiness ? UrlMap.outTradeNoQueryOrder.business : UrlMap.outTradeNoQueryOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
       out_trade_no,
     })
@@ -122,7 +129,7 @@ export class BasePay {
   private async _closeOrder(data: any) {
     const { out_trade_no, ...body } = data
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness ? BasePay.UrlMap.closeOrder.business : BasePay.UrlMap.closeOrder.provider
+    const _ = isBusiness ? UrlMap.closeOrder.business : UrlMap.closeOrder.provider
     const apiUrl = replaceStrWithTokenObject(_, {
       out_trade_no,
     })
@@ -146,7 +153,7 @@ export class BasePay {
 
   //=========================================退款
   private async _refund<T = any>(data: any) {
-    const { apiUrl } = BasePay.UrlMap.refund
+    const { apiUrl } = UrlMap.refund
     const result = await this.base.request.post<T>(apiUrl, data)
     return result.data
   }
@@ -167,7 +174,7 @@ export class BasePay {
   //=========================================查询退款
   private async _queryRefund<T = any>(data: any) {
     const { out_refund_no, sub_mchid } = data
-    let apiUrl = replaceStrWithTokenObject(BasePay.UrlMap.queryRefund.apiUrl, {
+    let apiUrl = replaceStrWithTokenObject(UrlMap.queryRefund.apiUrl, {
       out_refund_no,
     })
     if (sub_mchid) {
@@ -190,7 +197,7 @@ export class BasePay {
   }
   //=========================================申请交易账单
   private async _applyTradeBill(data: any) {
-    const { apiUrl } = BasePay.UrlMap.applyTradeBill
+    const { apiUrl } = UrlMap.applyTradeBill
     const result = await this.base.request.get<BillResult>(apiUrl, {
       params: data,
     })
@@ -207,5 +214,46 @@ export class BasePay {
    */
   async applyTradeBillOnProvider(data: TradeBillParams) {
     return this._applyTradeBill(data)
+  }
+  //=========================================申请资金账单
+  private async _applyFundFlowBill(data: any) {
+    const { apiUrl } = UrlMap.fundflowBill
+    const result = await this.base.request.get<BillResult>(apiUrl, {
+      params: data,
+    })
+    return result.data
+  }
+  /**
+   * 申请资金账单-直连商户
+   */
+  async applyFundFlowBill(data: FundflowBillParams) {
+    return this._applyFundFlowBill(data)
+  }
+  /**
+   * 申请资金账单-服务商
+   */
+  async applyFundFlowBillOnProvider(data: FundflowBillParams) {
+    return this._applyFundFlowBill(data)
+  }
+  //=========================================申请单个子商户资金账单
+  /**
+   * 申请单个子商户资金账单 仅限服务商
+   */
+  async applySubMerchantFundFlowBill(data: SubMerchantFundflowBillParams) {
+    const { apiUrl } = UrlMap.subFundflowBill
+    const result = await this.base.request.get<SubMerchantFundflowBillResult>(apiUrl, {
+      params: data,
+    })
+    return result.data
+  }
+  //=========================================下载账单
+  /**
+   * 下载账单(通用)
+   */
+  async downloadBill(download_url: string) {
+    const result = await this.base.request.get<ArrayBuffer>(download_url, {
+      responseType: 'arraybuffer',
+    })
+    return result.data
   }
 }

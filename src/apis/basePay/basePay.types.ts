@@ -113,13 +113,17 @@ export interface ProviderPayerToken {
   sub_openid?: string
 }
 
-export interface JSAPI_Oder_Business extends BaseOrderParams, BusinessToken {
+export interface JSAPIOder_Business extends BaseOrderParams, BusinessToken {
   payer: BusinessPayerToken
 }
 
-export interface JSAPI_Oder_Provider extends BaseOrderParams, ProviderToken, SubToken {
+export interface JSAPIOder_Provider extends BaseOrderParams, ProviderToken, SubToken {
   payer: ProviderPayerToken
 }
+
+export interface AppOrder_Business extends Omit<BaseOrderParams, 'payer'>, BusinessToken {}
+export interface AppOrder_Provider extends Omit<BaseOrderParams, 'payer'>, ProviderToken, SubToken {}
+
 export interface BaseQueryOrderWithTid {
   /** 微信支付订单号 */
   transaction_id: string
@@ -268,6 +272,11 @@ export interface ReqPaymentParams {
   appId: string
   /** 预支付订单号,下单接口返回 */
   prepay_id: string
+}
+
+export interface AppReqPaymentParams extends ReqPaymentParams {
+  /** 商户号,若下单时候传了sub_mchid,须为sub_mchid的值 */
+  partnerId: string
 }
 
 export interface GoodsDetail {
@@ -437,4 +446,44 @@ export interface BillResult {
   download_url: string
   hash_type: 'SHA1'
   hash_value: string
+}
+
+export interface FundflowBillParams {
+  /** 账单日期，最长支持拉取最近三个月的账单 */
+  bill_date: string
+  /** 资金账户类型，BASIC，基本账户，OPERATION，运营账户，FEES，手续费账户 */
+  account_type?: 'BASIC' | 'OPERATION' | 'FEES'
+  /** 压缩账单,默认数据流 */
+  tar_type?: 'GZIP'
+}
+
+export interface SubMerchantFundflowBillParams {
+  /** 账单日期，最长支持拉取最近三个月的账单 */
+  bill_date: string
+  /** 资金账户类型，BASIC，基本账户，OPERATION，运营账户，FEES，手续费账户 */
+  account_type?: 'BASIC' | 'OPERATION' | 'FEES'
+  /** 压缩账单,默认数据流 */
+  tar_type?: 'GZIP'
+  /** 加密算法 */
+  algorithm?: 'AEAD_AES_256_GCM' | 'SM4_GCM'
+  /** 子商户号 */
+  sub_mchid: string
+}
+
+export interface SubMerchantFundflowBillResult {
+  download_bill_count: number
+  download_bill_list: {
+    /** 账单文件序号 */
+    bill_sequence: number
+    /** 下载地址30s内有效 */
+    download_url: string
+    /** 加密密钥,加密账单文件使用的加密密钥。密钥用商户证书的公钥进行加密，然后进行Base64编码 */
+    encrypt_key: string
+    /** 哈希类型 */
+    hash_type: 'SHA1'
+    /** 哈希值 */
+    hash_value: string
+    /** 随机字符串 */
+    nonce: string
+  }[]
 }
