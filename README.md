@@ -115,14 +115,14 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 
 ## 支持功能列表
 
-| 功能     | 官方链接                                                                             | 库名      | 服务商 | 直连商户 |
-| -------- | ------------------------------------------------------------------------------------ | --------- | ------ | -------- |
-| 特约商户 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter7_1_4.shtml) | Applyment | √      |          |
-| 基础支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | BasePay   | √      | √        |
-| JSAPI支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay   | √      | √        |
-| 小程序支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay   | √      | √        |
-| APP支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay   | √      | √        |
-
+| 功能       | 官方链接                                                                             | 库名            | 服务商 | 直连商户 |
+| ---------- | ------------------------------------------------------------------------------------ | --------------- | ------ | -------- |
+| 核心类   | 加解密,管理证书,扩展功能使用的基础类                                             | WechatPayV3Base | √      | √    |
+| 特约商户   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter7_1_4.shtml) | Applyment       | √      |        |
+| 基础支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | BasePay         | √      | √      |
+| JSAPI 支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay           | √      | √      |
+| 小程序支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay  | √      | √      |
+| APP 支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay          | √      | √      |
 
 ## 功能
 
@@ -152,26 +152,26 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
   - 查询结算账户 querySettlement
 - 基础支付 BasePay [扩展基础支付](#addPayClass)
   - 下单 order
-    -  orderOnProvider
+    - orderOnProvider
   - 商户订单号查订单 outTradeNoQueryOrder
-    -  outTradeNoQueryOrderOnProvider
+    - outTradeNoQueryOrderOnProvider
   - 微信订单号查订单 transactionIdQueryOrder
-    -  transactionIdQueryOrderOnProvider
+    - transactionIdQueryOrderOnProvider
   - 关闭订单 closeOrder
-    -  closeOrderOnProvider
+    - closeOrderOnProvider
   - 申请退款 refund
-    -  refundOnProvider
+    - refundOnProvider
   - 查询退款 queryRefund
-    -  queryRefundOnProvider
+    - queryRefundOnProvider
   - 申请交易账单 applyTradeBill
-    -  applyTradeBillOnProvider
+    - applyTradeBillOnProvider
   - 申请资金账单 applyFundFlowBill
-    -  applyFundFlowBillOnProvider
+    - applyFundFlowBillOnProvider
   - 申请单个子商户资金账单 (特属服务商)
-    -  applySubMerchantFundFlowBill
+    - applySubMerchantFundFlowBill
   - 下载账单 downloadBill
   - 获取前端调起支付参数 getPayParams (仅部分实现)
-  > 已下均继承自 BasePay,BasePay 将包含了所有的方法
+    > 已下均继承自 BasePay,BasePay 将包含了所有的方法
 - JSAPI 支付 JSPay
 - 小程序支付 MiniProgramPay
 - APP 支付 AppPay
