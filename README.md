@@ -216,32 +216,6 @@ apiController({
   .test()
 ```
 
-### <a id="addPayClass">扩展基础支付</a>
-
-支付类其实和上方的扩展功能类一样,只是为了方便使用,所以提供了一个 BasePay 类,继承 BasePay 类,重写下单方法即可。
-请注意,BasePay 默认按照 JSApiPay 完成，不修改其他方法的前提是其他方法的接口同 JSAPI 支付一致。(大多相同,没一个个看)
-或者你可以完整的编写新的支付类,这样可以保证你的代码更加清晰,查看上方的扩展功能类或 basePay 源码。
-
-```typescript
-import { BasePay } from 'wechat-pay-v3'
-
-export class MyPay extends BasePay {
-  //重写下单方法
-  async order(data: any) {
-    return this.base.request.post('xxx', data)
-  }
-}
-
-//使用
-//推荐使用容器,容器调用的类会自动注入 WechatPayV3Base 实例且默认单例
-//下单
-apiController(businessOne).use(MyPay).order(/* ... */)
-//查询订单
-apiController(businessOne).use(MyPay).transactionIdQueryOrder({
-  /* ... */
-})
-```
-
 ## 贡献须知
 
 - 类型和 JSDOC 完整
