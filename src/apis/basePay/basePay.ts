@@ -9,6 +9,7 @@ import type {
   JSAPI_QueryOrder_outTradeNo_Provider,
   JSAPI_QueryOrder_tid_Business,
   JSAPI_QueryOrder_tid_Provider,
+  OrderResult,
   QueryOrderResult_Business,
   QueryOrderResult_Provider,
   RefundResult,
@@ -65,7 +66,7 @@ export class BasePay {
     //这里不用类型标注,因为typescript当前版本不会缩减范围
     const isBusiness = data.appid !== undefined
     const apiUrl = isBusiness ? UrlMap.order.business : UrlMap.order.provider
-    const result = await this.base.request.post<{ prepay_id: string }>(apiUrl, data)
+    const result = await this.base.request.post<OrderResult>(apiUrl, data)
     return result.data
   }
   /** 下单-直连商户 */

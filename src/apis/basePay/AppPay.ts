@@ -15,7 +15,7 @@ export class AppPay extends BasePay {
     super(base)
   }
 
-  private async _apporder(params: any) {
+  private async _exOrder(params: any) {
     const isBusiness = params.appid !== undefined
     const apiUrl = isBusiness ? UrlMap.order.business : UrlMap.order.provider
     const result = await this.base.request.post<{ prepay_id: string }>(apiUrl, params)
@@ -25,13 +25,13 @@ export class AppPay extends BasePay {
    * App支付下单 直连
    */
   async order(params: AppOrder_Business) {
-    return this._apporder(params)
+    return this._exOrder(params)
   }
   /**
    * App支付下单 服务商
    */
   async orderOnProvider(data: AppOrder_Provider) {
-    return this._apporder(data)
+    return this._exOrder(data)
   }
   /**
    * 获取App调起支付参数

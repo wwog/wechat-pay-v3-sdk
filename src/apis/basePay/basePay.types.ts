@@ -124,6 +124,10 @@ export interface JSAPIOder_Provider extends BaseOrderParams, ProviderToken, SubT
 export interface AppOrder_Business extends Omit<BaseOrderParams, 'payer'>, BusinessToken {}
 export interface AppOrder_Provider extends Omit<BaseOrderParams, 'payer'>, ProviderToken, SubToken {}
 
+export interface H5Order_Business extends Omit<BaseOrderParams, 'payer'>, BusinessToken {}
+export interface H5Order_Provider extends Omit<BaseOrderParams, 'payer'>, ProviderToken, SubToken {}
+
+export type OrderResult = { prepay_id: string } | { h5_url: string }
 export interface BaseQueryOrderWithTid {
   /** 微信支付订单号 */
   transaction_id: string

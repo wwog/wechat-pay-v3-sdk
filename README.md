@@ -123,6 +123,7 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 | JSAPI 支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay           | √      | √      |
 | 小程序支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay  | √      | √      |
 | APP 支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay          | √      | √      |
+| H5 支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | H5Pay          | √      | √      |
 
 ## 功能
 
