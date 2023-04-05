@@ -1,7 +1,7 @@
 {
   "name": "wechat-pay-v3",
   "version": "2.2.0",
-  "description": "wechat-pay-v3",
+  "description": "Wechat Pay V3 SDK for Node.js",
   "files": [
     "dist"
   ],
@@ -32,7 +32,9 @@
     "v3",
     "sdk",
     "wxpay",
-    "wx"
+    "wx",
+    "wechat",
+    "pay"
   ],
   "author": "wwog",
   "license": "MIT",
