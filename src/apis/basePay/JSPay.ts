@@ -1,10 +1,16 @@
 import { unixTimeStamp, randomStr } from 'src'
-import type { ReqPaymentParams } from './basePay.types'
+import type { JSAPIOder_Business, JSAPIOder_Provider, ReqPaymentParams } from './basePay.types'
 import { BasePay } from './basePay'
 
 export class JSPay extends BasePay {
+  order(data: JSAPIOder_Business) {
+    return super._order<{ prepay_id: string }>(data)
+  }
+  orderOnProvider(data: JSAPIOder_Provider) {
+    return super._order<{ prepay_id: string }>(data)
+  }
   /**
-   * 获取小程序调起支付参数
+   * 获取调起支付参数
    * @param params
    * @returns
    */

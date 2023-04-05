@@ -62,11 +62,11 @@ export class BasePay {
   constructor(public base: WechatPayV3Base) {}
 
   //=========================================下单
-  private async _order(data: any) {
+  protected async _order<T = OrderResult>(data: any) {
     //这里不用类型标注,因为typescript当前版本不会缩减范围
     const isBusiness = data.appid !== undefined
     const apiUrl = isBusiness ? UrlMap.order.business : UrlMap.order.provider
-    const result = await this.base.request.post<OrderResult>(apiUrl, data)
+    const result = await this.base.request.post<T>(apiUrl, data)
     return result.data
   }
   /** 下单-直连商户 */
@@ -79,7 +79,7 @@ export class BasePay {
   }
 
   //=========================================查询订单_通过微信订单号
-  private async _transactionIdQueryOrder<T = any>(data: any) {
+  protected async _transactionIdQueryOrder<T = any>(data: any) {
     const { transaction_id, ...query } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness ? UrlMap.transactionIdQueryOrder.business : UrlMap.transactionIdQueryOrder.provider
@@ -127,7 +127,7 @@ export class BasePay {
   }
 
   //=========================================关闭订单
-  private async _closeOrder(data: any) {
+  protected async _closeOrder(data: any) {
     const { out_trade_no, ...body } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness ? UrlMap.closeOrder.business : UrlMap.closeOrder.provider
@@ -153,7 +153,7 @@ export class BasePay {
   }
 
   //=========================================退款
-  private async _refund<T = any>(data: any) {
+  protected async _refund<T = any>(data: any) {
     const { apiUrl } = UrlMap.refund
     const result = await this.base.request.post<T>(apiUrl, data)
     return result.data
@@ -173,7 +173,7 @@ export class BasePay {
     return this._refund<RefundResult>(data)
   }
   //=========================================查询退款
-  private async _queryRefund<T = any>(data: any) {
+  protected async _queryRefund<T = any>(data: any) {
     const { out_refund_no, sub_mchid } = data
     let apiUrl = replaceStrWithTokenObject(UrlMap.queryRefund.apiUrl, {
       out_refund_no,
@@ -197,7 +197,7 @@ export class BasePay {
     return this._queryRefund<RefundResult>(data)
   }
   //=========================================申请交易账单
-  private async _applyTradeBill(data: any) {
+  protected async _applyTradeBill(data: any) {
     const { apiUrl } = UrlMap.applyTradeBill
     const result = await this.base.request.get<BillResult>(apiUrl, {
       params: data,
@@ -217,7 +217,7 @@ export class BasePay {
     return this._applyTradeBill(data)
   }
   //=========================================申请资金账单
-  private async _applyFundFlowBill(data: any) {
+  protected async _applyFundFlowBill(data: any) {
     const { apiUrl } = UrlMap.fundflowBill
     const result = await this.base.request.get<BillResult>(apiUrl, {
       params: data,

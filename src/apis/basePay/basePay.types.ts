@@ -127,7 +127,10 @@ export interface AppOrder_Provider extends Omit<BaseOrderParams, 'payer'>, Provi
 export interface H5Order_Business extends Omit<BaseOrderParams, 'payer'>, BusinessToken {}
 export interface H5Order_Provider extends Omit<BaseOrderParams, 'payer'>, ProviderToken, SubToken {}
 
-export type OrderResult = { prepay_id: string } | { h5_url: string }
+export interface NativeOrder_Business extends Omit<BaseOrderParams, 'payer'>, BusinessToken {}
+export interface NativeOrder_Provider extends Omit<BaseOrderParams, 'payer'>, ProviderToken, SubToken {}
+
+export type OrderResult = { prepay_id: string } | { h5_url: string } | { code_url: string }
 export interface BaseQueryOrderWithTid {
   /** 微信支付订单号 */
   transaction_id: string

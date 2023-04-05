@@ -113,72 +113,71 @@ import { WechatPayV3Base, Applyment } from 'wechat-pay-v3'
 new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
 ```
 
-## 支持功能列表
+## 已实现功能
 
 | 功能       | 官方链接                                                                             | 库名            | 服务商 | 直连商户 |
 | ---------- | ------------------------------------------------------------------------------------ | --------------- | ------ | -------- |
-| 核心类   | 加解密,管理证书,扩展功能使用的基础类                                             | WechatPayV3Base | √      | √    |
-| 特约商户   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter7_1_4.shtml) | Applyment       | √      |        |
-| 基础支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | BasePay         | √      | √      |
-| JSAPI 支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay           | √      | √      |
-| 小程序支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay  | √      | √      |
-| APP 支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay          | √      | √      |
-| H5 支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | H5Pay          | √      | √      |
+| 核心类     | 加解密,管理证书,扩展功能使用的基础类                                                 | WechatPayV3Base | √      | √        |
+| 特约商户   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter7_1_4.shtml) | Applyment       | √      |          |
+| 基础支付   | 因除合单支付外,其余方式仅下单不同,BasePay为支付基类            | BasePay         | √      | √        |
+| JSAPI 支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay           | √      | √        |
+| 小程序支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay  | √      | √        |
+| APP 支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay          | √      | √        |
+| H5 支付    | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | H5Pay           | √      | √        |
+| Native 支付    | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | NativePay           | √      | √        |
 
-## 功能
+> sdk满足大多数情况下的基本支付功能.扩展其余功能请参考<a href="#addClass">扩展功能类</a>
 
-- WechatPayV3Base
-  - hook 事件 setEvents
-  - 证书相关
-    - 获取证书 getCertificates
-    - 更新证书 updateCertificates
-  - 请求相关
-    - 请求实例 request
-    - 下载文件 downloadFile
-    - 上传图片 uploadImage
-    - 上传视频 uploadVideo
-  - 加解密
-    - 公钥加密 publicEncrypt
-    - 公钥加密(批量) publicEncryptObjectPaths
-    - AESGCM 解密 aesGcmDecrypt
-    - SHA256 签名 sha256WithRSA
-    - SHA256 验签 sha256WithRsaVerify
-  - 常用封装
-    - 响应验签 resVerify
-    - 回调处理 handleCallback
-- 特约商户 Applyment
-  - 提交申请单 submitApplications 不自动加密参数
-  - 查询申请状态 queryApplymentState
-  - 修改结算账户 modifySettlement
-  - 查询结算账户 querySettlement
-- 基础支付 BasePay [扩展基础支付](#addPayClass)
-  - 下单 order
-    - orderOnProvider
-  - 商户订单号查订单 outTradeNoQueryOrder
-    - outTradeNoQueryOrderOnProvider
-  - 微信订单号查订单 transactionIdQueryOrder
-    - transactionIdQueryOrderOnProvider
-  - 关闭订单 closeOrder
-    - closeOrderOnProvider
-  - 申请退款 refund
-    - refundOnProvider
-  - 查询退款 queryRefund
-    - queryRefundOnProvider
-  - 申请交易账单 applyTradeBill
-    - applyTradeBillOnProvider
-  - 申请资金账单 applyFundFlowBill
-    - applyFundFlowBillOnProvider
-  - 申请单个子商户资金账单 (特属服务商)
-    - applySubMerchantFundFlowBill
-  - 下载账单 downloadBill (返回buffer,需要保存至本地的话,WechatPayV3Base上的downloadFile更方便)
-  - 获取前端调起支付参数 getPayParams (仅部分实现)
-    > 已下均继承自 BasePay,BasePay 将包含了所有的方法
-- JSAPI 支付 JSPay
-- 小程序支付 MiniProgramPay
-- APP 支付 AppPay
+## TODO
+- [ ] 国密支持
+
+## 核心类
+
+- hook 事件 setEvents
+- 证书相关
+  - 获取证书 getCertificates
+  - 更新证书 updateCertificates
+- 请求相关
+  - 请求实例 request
+  - 下载文件 downloadFile
+  - 上传图片 uploadImage
+  - 上传视频 uploadVideo
+- 加解密
+  - 公钥加密 publicEncrypt
+  - 公钥加密(批量) publicEncryptObjectPaths
+  - AESGCM 解密 aesGcmDecrypt
+  - SHA256 签名 sha256WithRSA
+  - SHA256 验签 sha256WithRsaVerify
+- 常用封装
+  - 响应验签 resVerify
+  - 回调处理 handleCallback
 
 ## 实例代码
+### 通知接收
 
+base 实例上封装了通用的 handleCallback,他的功能是进行回调验签,通过后返回的 resource 对象会自动解密。
+
+```typescript
+import { apiController } from 'wechat-pay-v3'
+
+//假定这里是一个接口
+router.post('/notify', async (req, res) => {
+  try {
+    const wxapi = apiController({
+      /* xxx */
+    })
+    //handleCallback接收两个参数,第一个是请求头,第二个是请求体。
+    //实际并不一定是这样的,请根据实际情况调整。
+    const data = await wxapi.handleCallback(req.headers, req.body)
+    res.status(204).send()
+  } catch (e) {
+    res.status(400).send({
+      message: e.message,
+      code: 'FAIL',
+    })
+  }
+})
+```
 ### <a id="addClass">扩展功能类</a>
 
 封装 sdk 的目的是解决现有项目的需求,所以优先保证的是架构的扩展性,而非接口完整。
@@ -215,32 +214,6 @@ apiController({
 })
   .use(Others)
   .test()
-```
-
-### 通知接收
-
-base 实例上封装了通用的 handleCallback,他的功能是进行回调验签,通过后返回的 resource 对象会自动解密。
-
-```typescript
-import { apiController } from 'wechat-pay-v3'
-
-//假定这里是一个接口
-router.post('/notify', async (req, res) => {
-  try {
-    const wxapi = apiController({
-      /* xxx */
-    })
-    //handleCallback接收两个参数,第一个是请求头,第二个是请求体。
-    //实际并不一定是这样的,请根据实际情况调整。
-    const data = await wxapi.handleCallback(req.headers, req.body)
-    res.status(204).send()
-  } catch (e) {
-    res.status(400).send({
-      message: e.message,
-      code: 'FAIL',
-    })
-  }
-})
 ```
 
 ### <a id="addPayClass">扩展基础支付</a>
