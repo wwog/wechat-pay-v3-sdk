@@ -76,13 +76,13 @@ const base = new WechatPayV3Base(
 )
 ```
 
-### 调用方式 1 (推荐)容器调用
+### 调用方式
 
 容器默认单例模式,同个商户号只会返回一个实例。容器 use 的功能类也是单例模式。
 
 ```typescript
 import { apiController, ContainerOptions, Applyment } from 'wechat-pay-v3'
-const businessOne: ContainerOptions = {
+const Config: ContainerOptions = {
   //证书
   apiclient_cret: readFileSync('/xx/apiclient_cret.pem'),
   //证书密钥
@@ -100,21 +100,15 @@ const businessOne: ContainerOptions = {
   //可选，默认'wechatpay-sdk'
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
 }
-
-const wxpay = apiController(businessOne)
-wxpay.use(Applyment).submitApplications()
-```
-
-### 调用方式 2 类调用
-
-```typescript
-import { WechatPayV3Base, Applyment } from 'wechat-pay-v3'
-
-new Applyment(
-  new WechatPayV3Base({
-    /* xxx */
-  }),
-).submitApplications()
+//1 (推荐)容器调用.自动依赖注入,单例模式管理。
+const wxpay = apiController(Config)
+const applyment = wxpay.use(Applyment)
+//2 类调用
+const applyment = new Applyment(new WechatPayV3Base(Config))
+//Applyment 为特约商户的功能类
+//上方两种方式都可以拿到 applyment 实例
+//例如调用提交特约商户申请接口
+applyment.submitApplications()
 ```
 
 ## 已实现功能
