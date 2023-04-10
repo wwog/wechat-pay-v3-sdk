@@ -101,8 +101,8 @@ const businessOne: ContainerOptions = {
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
 }
 
-const b1 = apiController(businessOne)
-b1.use(Applyment).submitApplications()
+const wxpay = apiController(businessOne)
+wxpay.use(Applyment).submitApplications()
 ```
 
 ### 调用方式 2 类调用
@@ -110,25 +110,30 @@ b1.use(Applyment).submitApplications()
 ```typescript
 import { WechatPayV3Base, Applyment } from 'wechat-pay-v3'
 
-new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
+new Applyment(
+  new WechatPayV3Base({
+    /* xxx */
+  }),
+).submitApplications()
 ```
 
 ## 已实现功能
 
-| 功能       | 官方链接                                                                             | 库名            | 服务商 | 直连商户 |
-| ---------- | ------------------------------------------------------------------------------------ | --------------- | ------ | -------- |
-| 核心类     | 加解密,管理证书,扩展功能使用的基础类                                                 | WechatPayV3Base | √      | √        |
-| 特约商户   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter7_1_4.shtml) | Applyment       | √      |          |
-| 基础支付   | 因除合单支付外,其余方式仅下单不同,BasePay为支付基类            | BasePay         | √      | √        |
-| JSAPI 支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay           | √      | √        |
-| 小程序支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay  | √      | √        |
-| APP 支付   | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay          | √      | √        |
-| H5 支付    | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | H5Pay           | √      | √        |
-| Native 支付    | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | NativePay           | √      | √        |
+| 功能        | 官方链接                                                                             | 库名            | 服务商 | 直连商户 |
+| ----------- | ------------------------------------------------------------------------------------ | --------------- | ------ | -------- |
+| 核心类      | 加解密,管理证书,扩展功能使用的基础类                                                 | WechatPayV3Base | √      | √        |
+| 特约商户    | [link](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter7_1_4.shtml) | Applyment       | √      |          |
+| 基础支付    | 因除合单支付外,其余方式仅下单不同,BasePay 为支付基类                                 | BasePay         | √      | √        |
+| JSAPI 支付  | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | JSPay           | √      | √        |
+| 小程序支付  | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | MiniProgramPay  | √      | √        |
+| APP 支付    | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | AppPay          | √      | √        |
+| H5 支付     | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | H5Pay           | √      | √        |
+| Native 支付 | [link](https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_1.shtml)             | NativePay       | √      | √        |
 
-> sdk满足大多数情况下的基本支付功能.扩展其余功能请参考<a href="#addClass">扩展功能类</a>
+> sdk 满足大多数情况下的基本支付功能.扩展其余功能请参考<a href="#addClass">扩展功能类</a>
 
 ## TODO
+
 - [ ] 国密支持
 
 ## 核心类
@@ -152,7 +157,34 @@ new Applyment(new WechatPayV3Base(businessOne)).submitApplications()
   - 响应验签 resVerify
   - 回调处理 handleCallback
 
-## 实例代码
+## 示例代码
+
+### 下单接口示例
+
+```typescript
+const router = Router()
+const appId = '小程序appid'
+const wxpay = router.post('/pay/order', async (req, res, next) => {
+  try {
+    const miniPay = apiController({
+      /* xxx */
+    }).use(MiniProgramPay)
+    const { prepay_id } = await miniPay.order({
+      /* xxx */
+    })
+    //获取小程序支付参数
+    const payParams = miniPay.getPayParams({
+      appId,
+      prepay_id,
+    })
+    /* 小程序可以调起支付直接传入payParams即可 */
+    res.send(payParams)
+  } catch (e) {
+    next(e)
+  }
+})
+```
+
 ### 通知接收
 
 base 实例上封装了通用的 handleCallback,他的功能是进行回调验签,通过后返回的 resource 对象会自动解密。
@@ -178,6 +210,7 @@ router.post('/notify', async (req, res) => {
   }
 })
 ```
+
 ### <a id="addClass">扩展功能类</a>
 
 封装 sdk 的目的是解决现有项目的需求,所以优先保证的是架构的扩展性,而非接口完整。
