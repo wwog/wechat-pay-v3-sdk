@@ -1,5 +1,5 @@
 import type { WechatPayV3Base } from 'src/base'
-import { replaceStrWithTokenObject } from 'src/utils/index'
+import { replaceTagText } from 'src/utils/index'
 import type {
   BillResult,
   FundflowBillParams,
@@ -83,7 +83,7 @@ export class BasePay {
     const { transaction_id, ...query } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness ? UrlMap.transactionIdQueryOrder.business : UrlMap.transactionIdQueryOrder.provider
-    const apiUrl = replaceStrWithTokenObject(_, {
+    const apiUrl = replaceTagText(_, {
       transaction_id,
     })
     const result = await this.base.request.get<T>(apiUrl, { params: query })
@@ -107,7 +107,7 @@ export class BasePay {
     const { out_trade_no, ...query } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness ? UrlMap.outTradeNoQueryOrder.business : UrlMap.outTradeNoQueryOrder.provider
-    const apiUrl = replaceStrWithTokenObject(_, {
+    const apiUrl = replaceTagText(_, {
       out_trade_no,
     })
     const result = await this.base.request.get<T>(apiUrl, { params: query })
@@ -131,7 +131,7 @@ export class BasePay {
     const { out_trade_no, ...body } = data
     const isBusiness = data.mchid !== undefined
     const _ = isBusiness ? UrlMap.closeOrder.business : UrlMap.closeOrder.provider
-    const apiUrl = replaceStrWithTokenObject(_, {
+    const apiUrl = replaceTagText(_, {
       out_trade_no,
     })
     const result = await this.base.request.post(apiUrl, body)
@@ -175,7 +175,7 @@ export class BasePay {
   //=========================================查询退款
   protected async _queryRefund<T = any>(data: any) {
     const { out_refund_no, sub_mchid } = data
-    let apiUrl = replaceStrWithTokenObject(UrlMap.queryRefund.apiUrl, {
+    let apiUrl = replaceTagText(UrlMap.queryRefund.apiUrl, {
       out_refund_no,
     })
     if (sub_mchid) {

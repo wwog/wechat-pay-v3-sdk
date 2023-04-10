@@ -193,7 +193,7 @@ export function setPathValue(
  * @param afterToken 默认为 }
  * @returns
  */
-export function replaceStrWithTokenObject<T extends string>(
+export function replaceTagText<T extends string>(
   str: T,
   params: Record<GetUrlParams<T>, string>,
   beforeToken = '{',
