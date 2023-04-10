@@ -101,9 +101,9 @@ const Config: ContainerOptions = {
   //可选，默认'wechatpay-sdk'
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
 }
-//1 容器
+//1 容器获取示例
 const applyment = apiController(Config).use(Applyment)
-//2 类
+//2 类直接new就好,不过请自行管理实例避免重复创建造成性能浪费
 const applyment = new Applyment(new WechatPayV3Base(Config))
 //Applyment 为特约商户的功能类
 //上方两种方式都可以拿到 applyment 实例
