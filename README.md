@@ -78,7 +78,8 @@ const base = new WechatPayV3Base(
 
 ### 调用方式
 
-调用方式有两种,一种通过封装的容器调用,一种通过类调用。容器实现默认单例和自动的依赖注入。
+调用方式有两种,一种通过封装的容器调用,一种通过类调用。容器实现默认单例(容器调用的类均单例)和自动的依赖注入。
+容器函数为`apiController`
 
 ```typescript
 import { apiController, ContainerOptions, Applyment } from 'wechat-pay-v3'
@@ -101,8 +102,7 @@ const Config: ContainerOptions = {
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
 }
 //1 容器
-const wxpay = apiController(Config)
-const applyment = wxpay.use(Applyment)
+const wxpay = apiController(Config).use(Applyment)
 //2 类
 const applyment = new Applyment(new WechatPayV3Base(Config))
 //Applyment 为特约商户的功能类
