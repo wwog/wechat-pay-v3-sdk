@@ -226,7 +226,7 @@ apiController({
   - 服务商命名使用 [方法名]OnProvider,例如:orderOnProvider
 - 直连和服务商的方法分开,不要 类型或来书写,因为 typescript 提示不会缩减范围导致类型提示错误(函数重载也可以实现功能,不过我选择了分开,这样更加清晰)
 - 由于直连商户和服务商的调用参数往往不一样,调用参数统一全量填写，而非引用配置的方式。这样可以保证参数的正确性。例如需要 mchid 和 openid,那么就需要传入 mchid 和 openid,而不是引用配置的 mchid。
-- 封装了 replaceStrWithTokenObject,这个方法会将文本中的{token}替换为对象中的 token 属性,用来合成调用时需要参数的 url, 而不是在调用时拼接,也和微信的文档中 url 保持一致
+- 封装了 replaceTagText ,这个方法会将文本中的{token}替换为对象中的 token 属性,用来合成调用时需要参数的 url, 而不是在调用时拼接,也和微信的文档中 url 保持一致
 
 ## 关于发布及测试
 
