@@ -102,7 +102,7 @@ const Config: ContainerOptions = {
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
 }
 //1 容器
-const wxpay = apiController(Config).use(Applyment)
+const applyment = apiController(Config).use(Applyment)
 //2 类
 const applyment = new Applyment(new WechatPayV3Base(Config))
 //Applyment 为特约商户的功能类
