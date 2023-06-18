@@ -323,6 +323,8 @@ export interface Refund_Business {
   notify_url?: string
   /** 资金账户 */
   funds_account?: string
+  /** 退款金额信息 */
+  amount: RefundAmount
   /** 单品列表信息，微信支付后台会根据此参数控制向用户展示商品详情 */
   goods_detail?: GoodsDetail[]
 }
