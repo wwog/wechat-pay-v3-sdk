@@ -47,7 +47,7 @@ export interface WechatBaseOptions {
   /**
    * 自动更新平台证书
    * @default true
-   * @description 本库的做法,更偏向于惰性更新,缓存证书并记录过期时间,在每次请求时,比对时间进行更新(简单的时间比对于性能没有啥影响)。
+   * @description 更偏向于惰性更新,缓存证书并记录过期时间,在每次请求时,比对时间进行更新(简单的时间比对于性能没有啥影响)。
    * @description 如果你需要自己管控,可以关闭此选项,调用updateCertificates(true)方法强制更新实例上的证书
    */
   autoUpdateCertificates?: boolean
