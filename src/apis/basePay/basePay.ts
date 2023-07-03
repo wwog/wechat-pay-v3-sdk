@@ -82,11 +82,11 @@ export class BasePay {
   protected async _transactionIdQueryOrder<T = any>(data: any) {
     const { transaction_id, ...query } = data
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness ? UrlMap.transactionIdQueryOrder.business : UrlMap.transactionIdQueryOrder.provider
+    const _ = isBusiness ? UrlMap.transactionIdQueryOrder.business + '?mchid=' + query.mchid : UrlMap.transactionIdQueryOrder.provider + '?sp_mchid=' + query.sp_mchid + '&sub_mchid=' + query.sub_mchid
     const apiUrl = replaceTagText(_, {
       transaction_id,
     })
-    const result = await this.base.request.get<T>(apiUrl, { params: query })
+    const result = await this.base.request.get<T>(apiUrl)
     return result.data
   }
   /**
@@ -106,11 +106,11 @@ export class BasePay {
   async _outTradeNoQueryOrder<T = any>(data: any) {
     const { out_trade_no, ...query } = data
     const isBusiness = data.mchid !== undefined
-    const _ = isBusiness ? UrlMap.outTradeNoQueryOrder.business : UrlMap.outTradeNoQueryOrder.provider
+    const _ = isBusiness ? UrlMap.outTradeNoQueryOrder.business + '?mchid=' + query.mchid : UrlMap.outTradeNoQueryOrder.provider + '?sp_mchid=' + query.sp_mchid + '&sub_mchid=' + query.sub_mchid
     const apiUrl = replaceTagText(_, {
       out_trade_no,
     })
-    const result = await this.base.request.get<T>(apiUrl, { params: query })
+    const result = await this.base.request.get<T>(apiUrl)
     return result.data
   }
   /**
