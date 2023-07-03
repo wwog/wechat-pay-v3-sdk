@@ -1,6 +1,6 @@
 {
   "name": "wechat-pay-v3",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "Wechat Pay V3 SDK for Node.js",
   "files": [
     "dist"
