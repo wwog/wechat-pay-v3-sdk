@@ -71,9 +71,6 @@ export function getCertificatePublicKey(certString: string) {
 }
 
 /**
- * 解密
- */
-/**
  * 敏感信息加密
  * @param data 待加密数据
  */
