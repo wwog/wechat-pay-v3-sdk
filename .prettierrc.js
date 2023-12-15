@@ -8,7 +8,6 @@ const config = {
   semi: false,
   singleQuote: true,
   trailingComma: 'all',
-  bracketSpacing: true,
   htmlWhitespaceSensitivity: 'ignore',
   endOfLine: 'lf',
   embeddedLanguageFormatting: 'auto',

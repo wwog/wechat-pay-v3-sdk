@@ -41,7 +41,7 @@ hook 方法传递的参数都是原始引用,请注意不要轻易修改,除非�
 sdkWork：为请求的核心逻辑,在这个阶段会对参数进行加密,签名,更新证书等操作。
 
 ```typescript
-apiController(
+apiContainer(
   {
     /* config */
   },
@@ -79,10 +79,10 @@ const base = new WechatPayV3Base(
 ### 调用方式
 
 调用方式有两种,一种通过封装的容器调用,一种通过类调用。容器实现默认单例(容器调用的类均单例)和自动的依赖注入。
-容器函数为`apiController`
+容器函数为`apiContainer`
 
 ```typescript
-import { apiController, ContainerOptions, Applyment } from 'wechat-pay-v3'
+import { apiContainer, ContainerOptions, Applyment } from 'wechat-pay-v3'
 const Config: ContainerOptions = {
   //证书
   apiclient_cret: readFileSync('/xx/apiclient_cret.pem'),
@@ -102,7 +102,7 @@ const Config: ContainerOptions = {
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
 }
 //1 容器获取示例
-const applyment = apiController(Config).use(Applyment)
+const applyment = apiContainer(Config).use(Applyment)
 //2 类直接new就好,不过请自行管理实例避免重复创建造成性能浪费
 const applyment = new Applyment(new WechatPayV3Base(Config))
 //Applyment 为特约商户的功能类
@@ -160,7 +160,7 @@ const router = Router()
 const appId = '小程序appid'
 const wxpay = router.post('/pay/order', async (req, res, next) => {
   try {
-    const miniPay = apiController({
+    const miniPay = apiContainer({
       /* xxx */
     }).use(MiniProgramPay)
     const { prepay_id } = await miniPay.order({
@@ -184,12 +184,12 @@ const wxpay = router.post('/pay/order', async (req, res, next) => {
 base 实例上封装了通用的 handleCallback,他的功能是进行回调验签,通过后返回的 resource 对象会自动解密。
 
 ```typescript
-import { apiController } from 'wechat-pay-v3'
+import { apiContainer } from 'wechat-pay-v3'
 
 //假定这里是一个接口
 router.post('/notify', async (req, res) => {
   try {
-    const wxapi = apiController({
+    const wxapi = apiContainer({
       /* xxx */
     })
     //handleCallback接收两个参数,第一个是请求头,第二个是请求体。
@@ -236,7 +236,7 @@ const others = new Others(baseIns)
 //直接调用
 others.test()
 //或者通过容器调用
-apiController({
+apiContainer({
   /* xxx */
 })
   .use(Others)
