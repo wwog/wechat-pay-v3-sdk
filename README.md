@@ -96,7 +96,7 @@ const Config: ContainerOptions = {
   singleton: true,
   //可选:默认系统的tmp目录
   downloadDir: './tmpDownlond',
-  //可选: 默认ture。开启后会缓存证书12小时,12小时后惰性更新证书
+  //可选: 默认true。开启后会缓存证书12小时,12小时后惰性更新证书
   autoUpdateCertificates: true,
   //可选，默认'wechatpay-sdk'
   userAgent: 'wechatpay-nodejs-sdk/1.0.0',
