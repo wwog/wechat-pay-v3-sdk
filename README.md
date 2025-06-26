@@ -85,7 +85,7 @@ const base = new WechatPayV3Base(
 import { apiContainer, ContainerOptions, Applyment } from 'wechat-pay-v3'
 const Config: ContainerOptions = {
   //证书
-  apiclient_cret: readFileSync('/xx/apiclient_cret.pem'),
+  apiclient_cert: readFileSync('/xx/apiclient_cert.pem'),
   //证书密钥
   apiclient_key: readFileSync('/xx/apiclient_key.pem'),
   //后台配置的key

@@ -31,7 +31,7 @@ export interface WechatBaseOptions {
   /**
    * pem证书
    */
-  apiclient_cret: Buffer
+  apiclient_cert: Buffer
   /**
    * pem私钥
    */
@@ -100,7 +100,7 @@ export class WechatPayV3Base {
   /** 更新证书时间+12小时后的结果,注意此时间并非平台证书本身的过期时间,而是需要更新的时间 */
   certExpiresTime?: Date
   /** 商户Api证书序列号 */
-  readonly apiCretSerialNo: string
+  readonly apiCertSerialNo: string
   /** 下载文件文件夹 */
   readonly downloadDir: string
 
@@ -108,7 +108,7 @@ export class WechatPayV3Base {
     this.mchid = options.mchid
     this.userAgent = options.userAgent ?? 'wechatpay-sdk'
     this.privateKey = options.apiclient_key
-    this.apiCretSerialNo = getCertificateSerialNo(options.apiclient_cret)
+    this.apiCertSerialNo = getCertificateSerialNo(options.apiclient_cert)
     this.apiV3Key = options.apiV3Key
     if (options.downloadDir) {
       this.downloadDir = options.downloadDir
@@ -243,7 +243,7 @@ export class WechatPayV3Base {
    * @param signature 签名(buildMessage生成)
    */
   protected getAuthorization(nonce_str: string, timestamp: string, signature: string) {
-    return `${this.schema} ${getToken(this.mchid, this.apiCretSerialNo, nonce_str, timestamp, signature)}`
+    return `${this.schema} ${getToken(this.mchid, this.apiCertSerialNo, nonce_str, timestamp, signature)}`
   }
   /**
    * 私钥签名
